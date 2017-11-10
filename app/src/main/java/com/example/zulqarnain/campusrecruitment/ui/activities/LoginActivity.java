@@ -1,5 +1,6 @@
 package com.example.zulqarnain.campusrecruitment.ui.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -133,6 +134,9 @@ public class LoginActivity extends AppCompatActivity  {
     protected void onStart() {
         super.onStart();
         if(auth.getCurrentUser()!=null){
+            ProgressDialog.show(LoginActivity.this,
+                    "Checking session",
+                    "Processing");
             updataUi();
         }
     }

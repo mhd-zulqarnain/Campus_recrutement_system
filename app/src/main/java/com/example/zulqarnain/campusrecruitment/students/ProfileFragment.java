@@ -14,9 +14,12 @@ import com.example.zulqarnain.campusrecruitment.R;
  */
 
 public class ProfileFragment extends Fragment {
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.student_profile_fragment,container,false);
+        View view= inflater.inflate(R.layout.student_profile_fragment,container,false);
+
+        return view;
     }
 }

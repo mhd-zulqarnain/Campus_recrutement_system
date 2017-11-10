@@ -69,9 +69,9 @@ public class JobAdapter extends RecyclerView.Adapter< JobAdapter.ViewJobHolder> 
 
         public void bindView(Jobs mjob) {
             this.mjob=mjob;
-            tp.setText(mjob.getJobType());
-            ds.setText(mjob.getJobDescription());
-            vc.setText(mjob.getJobVacancy());
+            tp.setText("Type:"+mjob.getJobType());
+            ds.setText("Descripton:"+mjob.getJobDescription());
+            vc.setText("Vacancy:"+mjob.getJobVacancy());
             Log.d("", "bindView: binded");
         }
 

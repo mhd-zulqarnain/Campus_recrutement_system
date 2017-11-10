@@ -24,4 +24,9 @@
         <item>IT</item>
         <item>Bussiness</item>
     </string-array>
+
+    <string-array name="dash_type">
+        <item>New Jobs</item>
+        <item>Applied</item>
+    </string-array>
 </resources>

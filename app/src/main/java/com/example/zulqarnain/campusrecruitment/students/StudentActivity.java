@@ -55,10 +55,11 @@ public class StudentActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if(position==0){
-                return new ProfileFragment();
+                return new StudentDashboardFragment();
             }
             else if(position==1){
-                return new StudentDashboardFragment();
+                return new ProfileFragment();
+
             }
             return null;
         }
@@ -67,6 +68,8 @@ public class StudentActivity extends AppCompatActivity {
                 return "Student dashboard";
             else
                 return "Student Profile";
+
+
 
         }
         @Override
