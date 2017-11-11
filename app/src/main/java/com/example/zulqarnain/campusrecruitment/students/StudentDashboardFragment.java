@@ -9,16 +9,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.Jobs;
+import com.example.zulqarnain.campusrecruitment.utils.Messege;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +38,7 @@ public class StudentDashboardFragment extends Fragment {
     private String TAG = "test";
     ArrayList<Jobs> jobList;
     AdapterNewJob adapter;
-
+    static boolean applied = false;
 
     @Nullable
     @Override
@@ -47,109 +51,160 @@ public class StudentDashboardFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.dash_type,
                 android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
-        updateUi();
-//        checkUi();
+        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                updateUi(i);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Messege.messege(getContext(), "sleceted nothing");
+
+            }
+        });
         return v;
     }
 
-    private void updateUi() {
+    private void updateUi(int option) {
         jobList = new ArrayList<>();
-        adapter = new AdapterNewJob(getContext(),jobList);
+        adapter = new AdapterNewJob(getContext(), jobList);
         mRecyclerDash.setAdapter(adapter);
-        String option = mSpinner.getSelectedItem().toString();
-        if (option.equals("New Jobs")) {
-            Log.d(TAG, "updateUi: ");
-            ref = FirebaseDatabase.getInstance().getReference("company");
 
+        if (option == 0) {
+            final String selected = "newJob";
+            ref = FirebaseDatabase.getInstance().getReference("jobs");
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    DataSnapshot snaps = dataSnapshot.child("jobs");
-                    for (DataSnapshot model : snaps.getChildren()) {
-                        Jobs job = model.getValue(Jobs.class);
-                        jobList.add(job);
-                        adapter.notifyDataSetChanged();
-                    }
+
+                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    hasApply(job, "add", selected);
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                   /* DataSnapshot snaps = dataSnapshot.child("jobs");
-                    for (DataSnapshot model : snaps.getChildren()) {
-                        Jobs job = model.getValue(Jobs.class);
-                        String index=job.getJobKey();
-                        Log.d(TAG, "onChildChanged: index "+index);
-                        *//*jobList.set(index,job);
-                        adapter.notifyItemChanged(index);*//*
-                    }*/
+                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    hasApply(job, "changed", selected);
+
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                   /* DataSnapshot snaps = dataSnapshot.child("jobs");
-                    for (DataSnapshot model : snaps.getChildren()) {
-                        Jobs job = model.getValue(Jobs.class);
-                        int index= jobList.indexOf(job);
-                        jobList.remove(job);
-                        adapter.notifyItemRemoved(index);
-                    }*/
+                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    hasApply(job, "remove", selected);
                 }
 
                 @Override
                 public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
-
                 }
             });
+        } else if (option == 1) {
+            final String selected = "applied";
 
+            ref = FirebaseDatabase.getInstance().getReference("jobs");
+            ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    hasApply(job, "add", selected);
+                }
 
-        }
-        if (option.equals("Applied")) {
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    hasApply(job, "changed", selected);
 
+                }
 
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    hasApply(job, "remove", selected);
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
         }
     }
 
-    /*private void checkUi(){
-        jobList = new ArrayList<>();
-        adapter = new AdapterNewJob(getContext(),jobList);
-        mRecyclerDash.setAdapter(adapter);
-        ref = FirebaseDatabase.getInstance().getReference("company").getRef().child("jobs");
-        ref.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded: "+dataSnapshot);
+    public int getIndex(String jobkey) {
+        for (int i = 0; i < jobList.size(); i++) {
+            if (jobkey.equals(jobList.get(i).getJobKey())) {
+                return i;
             }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }*/
-    public Jobs getIndex(){
-        for(int i=0;i<jobList.size();i++){
-//            if( )
         }
-        return null;
+        return 0;
+    }
+
+    public Boolean hasApply(final Jobs job, final String status, final String option) {
+        applied = false;
+        final String studentID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("applied").child(job.getJobKey());
+
+        if (option.equals("newJob")) {
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    if (!dataSnapshot.child(studentID).exists()) {
+                        if (status.equals("added")) {
+                        jobList.add(job);
+                            adapter.notifyDataSetChanged();
+                        } else if (status.equals("changed")) {
+                            int index = getIndex(job.getJobKey());
+                            jobList.set(index, job);
+                            adapter.notifyItemChanged(index);
+                        } else if (status.equals("remove")) {
+                            int index = getIndex(job.getJobKey());
+                            jobList.remove(index);
+                            adapter.notifyItemRemoved(index);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        } else if (option.equals("applied")) {
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child(studentID).exists()) {
+                        Log.d(TAG, "onDataChange: exists");
+                        if (status.equals("add")) {
+                            jobList.add(job);
+                            adapter.notifyDataSetChanged();
+                        } else if (status.equals("changed")) {
+                            int index = getIndex(job.getJobKey());
+                            jobList.set(index, job);
+                            adapter.notifyItemChanged(index);
+                        } else if (status.equals("remove")) {
+                            int index = getIndex(job.getJobKey());
+                            jobList.remove(index);
+                            adapter.notifyItemRemoved(index);
+                        }
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
+        return applied;
+
+
     }
 }
+

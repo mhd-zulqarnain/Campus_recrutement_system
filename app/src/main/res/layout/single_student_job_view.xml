@@ -5,10 +5,10 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/row_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:id="@+id/row_card_view"
 
         >
 
@@ -31,7 +31,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/job_type"
                 android:text="Testting text"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textSize="14sp"
+
+                />
 
             <TextView
                 android:id="@+id/job_vacan"
@@ -43,16 +45,20 @@
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <Button
-                android:id="@+id/btn_apply"
+                android:id="@+id/btn_detail"
+
                 android:layout_width="74dp"
                 android:layout_height="40dp"
                 android:layout_alignBaseline="@id/job_type"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@id/job_type"
-                android:text="Apply"
+                android:text="Detail"
+
 
                 />
+
+
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

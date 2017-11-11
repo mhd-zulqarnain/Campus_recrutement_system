@@ -30,8 +30,11 @@ public class CompanyDashboardFragment extends Fragment {
     private FirebaseAuth auth;
     private RecyclerView rJoblist;
     private ArrayList<Jobs> jobs;
-    private final String TAG="test";
+    private final String TAG = "test";
+    String comkey;
+
     JobAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,13 +48,14 @@ public class CompanyDashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
-        String key = auth.getCurrentUser().getUid();
-        ref = FirebaseDatabase.getInstance().getReference("company").child(key).child("jobs");
+        comkey = auth.getCurrentUser().getUid();
+
+        ref = FirebaseDatabase.getInstance().getReference("jobs");
     }
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAdapter(getContext(), jobs,ref);
+        adapter = new JobAdapter(getContext(), jobs, ref);
         rJoblist.setLayoutManager(new LinearLayoutManager(getContext()));
         rJoblist.setAdapter(adapter);
 
@@ -59,10 +63,11 @@ public class CompanyDashboardFragment extends Fragment {
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Jobs job= dataSnapshot.getValue(Jobs.class);
-                Log.d(TAG, "onChildAdded: "+job.getJobDescription());
-                jobs.add(job);
-                adapter.notifyDataSetChanged();
+                Jobs job = dataSnapshot.getValue(Jobs.class);
+                if (job.getCompanyKey().equals(comkey)) {
+                    jobs.add(job);
+                    adapter.notifyDataSetChanged();
+                }
             }
 
             @Override
@@ -91,10 +96,10 @@ public class CompanyDashboardFragment extends Fragment {
         });
     }
 
-    public int getIndexOf(String key){
-        for(int i=0;i<jobs.size();i++){
-            Jobs mj= jobs.get(i);
-            if(mj.getJobKey().equals(key)){
+    public int getIndexOf(String key) {
+        for (int i = 0; i < jobs.size(); i++) {
+            Jobs mj = jobs.get(i);
+            if (mj.getJobKey().equals(key)) {
                 return jobs.indexOf(mj);
             }
         }

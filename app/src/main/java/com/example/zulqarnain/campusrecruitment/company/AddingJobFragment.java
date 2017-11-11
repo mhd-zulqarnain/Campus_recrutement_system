@@ -48,8 +48,7 @@ public class AddingJobFragment extends Fragment implements View.OnClickListener 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
-        String key=auth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference("company").child(key);
+        mDatabase = FirebaseDatabase.getInstance().getReference("jobs");
     }
 
 
@@ -75,10 +74,10 @@ public class AddingJobFragment extends Fragment implements View.OnClickListener 
             Messege.messege(getContext(),"Enter number of vacancy");
             return;
         }
-
+        String comkey=auth.getCurrentUser().getUid();
         String key=mDatabase.push().getKey();
-        Jobs job = new Jobs(jType,key,jDes,jVac);
-        mDatabase.child("jobs").child(key).setValue(job);
+        Jobs job = new Jobs(jType,key,jDes,jVac,comkey);
+        mDatabase.child(key).setValue(job);
 
         jDescription.setText("");
         jVacancy.setText("");
