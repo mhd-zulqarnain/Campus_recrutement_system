@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.utils.Messege;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -77,7 +78,10 @@ public class JobAdapter extends RecyclerView.Adapter< JobAdapter.ViewJobHolder> 
 
         @Override
         public void onClick(View view) {
-            ref.child(mjob.getJobKey()).removeValue();
+            String key = mjob.getJobKey();
+            ref.child(key).removeValue();
+            Log.d("viewholder", "onClick: "+getAdapterPosition());
+//            FirebaseDatabase.getInstance().getReference("applied").child(mjob.getJobKey()).removeValue();
         }
     }
 }

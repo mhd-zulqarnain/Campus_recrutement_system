@@ -68,6 +68,7 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
         private TextView vc;
         private Button bDetail;
         private Jobs mjob;
+        private Button mBtn;
 
         public NewJobHolder(View itemView) {
             super(itemView);
@@ -76,6 +77,8 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
             vc = itemView.findViewById(R.id.job_vacan);
             bDetail = itemView.findViewById(R.id.btn_detail);
             bDetail.setOnClickListener(this);
+            mBtn = itemView.findViewById(R.id.btn_apply);
+            mBtn.setOnClickListener(this);
         }
 
         public void bindView(Jobs mjob) {
@@ -89,9 +92,28 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
         @Override
         public void onClick(View view) {
 
-                DialogFragment fragment = JobDetailDialogFragment.newInstance(R.string.student_job_dialog,mjob);
+            if (view.getId() == R.id.btn_detail) {
+                DialogFragment fragment = JobDetailDialogFragment.newInstance(R.string.student_job_dialog, mjob);
                 fragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "myDialog");
+            } else if (view.getId() == R.id.btn_apply) {
+
+                DatabaseReference df = FirebaseDatabase.getInstance().getReference("applied/" + mjob.getJobKey());
+                df.child(key).setValue(getName());
+                int index= getIndex(mjob.getJobKey());
+
+                jobList.remove(mjob);
+                notifyItemRemoved(index);
+            }
         }
+        public int getIndex(String jobkey) {
+            for (int i = 0; i < jobList.size(); i++) {
+                if (jobkey.equals(jobList.get(i).getJobKey())) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
 
         public String getName() {
             return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -102,8 +124,13 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child(key).exists()) {
-                        bDetail.setVisibility(View.GONE);
+
+                        if(dataSnapshot.hasChild(key)){
+                            Log.d("asd" ,"onDataChange: called"+getAdapterPosition());
+                            if(getAdapterPosition()!=-1){
+
+                            jobList.remove(mjob);
+                            notifyDataSetChanged();}
                     }
                 }
 

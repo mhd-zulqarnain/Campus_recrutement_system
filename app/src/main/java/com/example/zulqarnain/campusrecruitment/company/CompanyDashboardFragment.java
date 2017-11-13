@@ -80,7 +80,7 @@ public class CompanyDashboardFragment extends Fragment {
                 Jobs job= dataSnapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
                 jobs.remove(index);
-                adapter.notifyItemChanged(index);
+                adapter.notifyDataSetChanged();
 
             }
 

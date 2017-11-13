@@ -31,7 +31,7 @@ import java.util.HashMap;
  * Created by Zul Qarnain on 11/6/2017.
  */
 
-public class StudentDashboardFragment extends Fragment {
+public class StudentDashboardFragment extends Fragment{
     private Spinner mSpinner;
     private RecyclerView mRecyclerDash;
     private DatabaseReference ref;
@@ -55,7 +55,6 @@ public class StudentDashboardFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 updateUi(i);
-
             }
 
             @Override
@@ -78,22 +77,27 @@ public class StudentDashboardFragment extends Fragment {
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
                     Jobs job = dataSnapshot.getValue(Jobs.class);
-                    hasApply(job, "add", selected);
+                    jobList.add(job);
+                    adapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     Jobs job = dataSnapshot.getValue(Jobs.class);
-                    hasApply(job, "changed", selected);
-
+                    int index = getIndex(job.getJobKey());
+                    jobList.set(index, job);
+                    adapter.notifyItemChanged(index);
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     Jobs job = dataSnapshot.getValue(Jobs.class);
-                    hasApply(job, "remove", selected);
+                    int index = getIndex(job.getJobKey());
+                    if (index != -1) {
+                        jobList.remove(index);
+                        adapter.notifyItemRemoved(index);
+                    }
                 }
 
                 @Override
@@ -107,25 +111,27 @@ public class StudentDashboardFragment extends Fragment {
         } else if (option == 1) {
             final String selected = "applied";
 
-            ref = FirebaseDatabase.getInstance().getReference("jobs");
+          /*  ref = FirebaseDatabase.getInstance().getReference("jobs");
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Jobs job = dataSnapshot.getValue(Jobs.class);
-                    hasApply(job, "add", selected);
                 }
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     Jobs job = dataSnapshot.getValue(Jobs.class);
-                    hasApply(job, "changed", selected);
-
+                    int index = getIndex(job.getJobKey());
+                    jobList.set(index, job);
+                    adapter.notifyItemChanged(index);
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     Jobs job = dataSnapshot.getValue(Jobs.class);
-                    hasApply(job, "remove", selected);
+                    int index = getIndex(job.getJobKey());
+                    jobList.remove(index);
+                    adapter.notifyItemRemoved(index);
                 }
 
                 @Override
@@ -135,7 +141,7 @@ public class StudentDashboardFragment extends Fragment {
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
-            });
+            });*/
         }
     }
 
@@ -145,11 +151,14 @@ public class StudentDashboardFragment extends Fragment {
                 return i;
             }
         }
-        return 0;
+        return -1;
     }
 
-    public Boolean hasApply(final Jobs job, final String status, final String option) {
+
+
+    /*public Boolean hasApply(final Jobs job, final String status, final String option) {
         applied = false;
+
         final String studentID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("applied").child(job.getJobKey());
 
@@ -157,11 +166,14 @@ public class StudentDashboardFragment extends Fragment {
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                     if (!dataSnapshot.child(studentID).exists()) {
-                        if (status.equals("added")) {
-                        jobList.add(job);
-                            adapter.notifyDataSetChanged();
+                        if (status.equals("add")) {
+                            if(getIndex(job.getJobKey())==0){
+                                jobList.add(job);
+                                Log.d(TAG, "onDataChange: apply");
+                                adapter.notifyDataSetChanged();
+
+                            }
                         } else if (status.equals("changed")) {
                             int index = getIndex(job.getJobKey());
                             jobList.set(index, job);
@@ -205,6 +217,6 @@ public class StudentDashboardFragment extends Fragment {
         return applied;
 
 
-    }
+    }*/
 }
 
