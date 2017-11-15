@@ -1,7 +1,6 @@
-package com.example.zulqarnain.campusrecruitment.students;
+package com.example.zulqarnain.campusrecruitment.students.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -14,8 +13,9 @@ import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.Jobs;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
+import com.example.zulqarnain.campusrecruitment.students.JobDetailDialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,20 +24,21 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Zul Qarnain on 11/8/2017.
  */
 
-public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHolder> {
+public class AppliedJobAdapter extends RecyclerView.Adapter<AppliedJobAdapter.NewJobHolder> {
     private DatabaseReference mDatabase;
-    private ArrayList<Jobs> jobList;
+    private ArrayList<Jobs> mList;
     private Context mContext;
     private String key;
 
-    public AdapterNewJob(Context mContext, ArrayList<Jobs> jobs) {
+    public AppliedJobAdapter(Context mContext, ArrayList<Jobs> jobs) {
         this.mContext = mContext;
-        this.jobList = jobs;
+        this.mList = jobs;
         this.key = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.mDatabase = FirebaseDatabase.getInstance().getReference("applied");
 
@@ -52,13 +53,13 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
 
     @Override
     public void onBindViewHolder(NewJobHolder holder, int position) {
-        Jobs jobs = jobList.get(position);
+        Jobs jobs = mList.get(position);
         holder.bindView(jobs);
     }
 
     @Override
     public int getItemCount() {
-        return jobList.size();
+        return mList.size();
     }
 
     public class NewJobHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -69,6 +70,7 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
         private Button bDetail;
         private Jobs mjob;
         private Button mBtn;
+        private HashMap<DatabaseReference, ValueEventListener> hashMap = new HashMap<>();
 
         public NewJobHolder(View itemView) {
             super(itemView);
@@ -78,10 +80,12 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
             bDetail = itemView.findViewById(R.id.btn_detail);
             bDetail.setOnClickListener(this);
             mBtn = itemView.findViewById(R.id.btn_apply);
-            mBtn.setOnClickListener(this);
+
         }
 
         public void bindView(Jobs mjob) {
+            mBtn.setVisibility(View.GONE);
+            bDetail.setText("Delete");
             this.mjob = mjob;
             tp.setText("Type:" + mjob.getJobType());
             ds.setText("Descripton:" + mjob.getJobDescription());
@@ -93,21 +97,14 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
         public void onClick(View view) {
 
             if (view.getId() == R.id.btn_detail) {
-                DialogFragment fragment = JobDetailDialogFragment.newInstance(R.string.student_job_dialog, mjob);
-                fragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "myDialog");
-            } else if (view.getId() == R.id.btn_apply) {
-
-                DatabaseReference df = FirebaseDatabase.getInstance().getReference("applied/" + mjob.getJobKey());
-                df.child(key).setValue(getName());
-                int index= getIndex(mjob.getJobKey());
-
-                jobList.remove(mjob);
-                notifyItemRemoved(index);
+                FirebaseDatabase.getInstance().getReference("applied").child(mjob.getJobKey()).child(key).removeValue();
+                notifyDataSetChanged();
             }
         }
+
         public int getIndex(String jobkey) {
-            for (int i = 0; i < jobList.size(); i++) {
-                if (jobkey.equals(jobList.get(i).getJobKey())) {
+            for (int i = 0; i < mList.size(); i++) {
+                if (jobkey.equals(mList.get(i).getJobKey())) {
                     return i;
                 }
             }
@@ -121,23 +118,38 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
 
         public void btnEnable() {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("applied").child(mjob.getJobKey());
-            ref.addValueEventListener(new ValueEventListener() {
+            ValueEventListener listener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        if(dataSnapshot.hasChild(key)){
-                            Log.d("asd" ,"onDataChange: called"+getAdapterPosition());
-                            if(getAdapterPosition()!=-1){
-
-                            jobList.remove(mjob);
-                            notifyDataSetChanged();}
+                    if (getAdapterPosition() != -1) {
+                        if (!dataSnapshot.hasChild(key)) {
+                            if (getAdapterPosition() != -1) {
+                                Log.d("as", "onDataChange applied: " + getAdapterPosition());
+                                mList.remove(mjob);
+                                notifyDataSetChanged();
+                            }
+                        }
                     }
                 }
 
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                 }
-            });
+            };
+
+//            hashMap.put(ref,listener );
+            ref.addValueEventListener(listener);
+//            removeValueEventListener(hashMap);
+        }
+
+
+        public void removeValueEventListener(HashMap<DatabaseReference, ValueEventListener> hashMap) {
+            for (Map.Entry<DatabaseReference, ValueEventListener> entry : hashMap.entrySet()) {
+                DatabaseReference databaseReference = entry.getKey();
+                ValueEventListener valueEventListener = entry.getValue();
+                databaseReference.removeEventListener(valueEventListener);
+            }
         }
     }
 }

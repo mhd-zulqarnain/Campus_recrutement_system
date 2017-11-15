@@ -77,7 +77,7 @@ public class AddingJobFragment extends Fragment implements View.OnClickListener 
         String comkey=auth.getCurrentUser().getUid();
         String key=mDatabase.push().getKey();
         Jobs job = new Jobs(jType,key,jDes,jVac,comkey);
-        mDatabase.child(key).setValue(job);
+        mDatabase.child(key).child("details").setValue(job);
 
         jDescription.setText("");
         jVacancy.setText("");

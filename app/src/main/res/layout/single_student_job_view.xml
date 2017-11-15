@@ -59,7 +59,7 @@
                 android:id="@+id/btn_detail"
                 android:layout_width="74dp"
                 android:layout_height="40dp"
-                android:text="Detail"
+                android:text="Details"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />

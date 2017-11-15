@@ -1,4 +1,4 @@
-package com.example.zulqarnain.campusrecruitment.students;
+package com.example.zulqarnain.campusrecruitment.company;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -6,12 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.Jobs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,26 +24,27 @@ import com.google.firebase.database.ValueEventListener;
  * Created by Zul Qarnain on 11/10/2017.
  */
 
-public class JobDetailDialogFragment extends DialogFragment {
+public class CompanyDialogFragment extends DialogFragment {
 
     private String posButtonText;
     private String negButtonText;
-    private static final String ARGS_DIALOG_TYPE = "persontype";
+    private static final String ARGS_DIALOG_TYPE = "appliedJobs";
     private static final String ARGS_DIALOG_JOB_OBJECT = "jobObject";
     private TextView tCompanyName;
     private TextView tJobType;
-    private TextView tJobDescription;
-    private TextView tJobVacancy;
+    private EditText tJobDescription;
+    private EditText tJobVacancy;
     private Jobs mJob;
     private String currentUID;
     private static String comName;
     int dialogDetailType;
+    private FirebaseAuth auth;
 
-    public static JobDetailDialogFragment newInstance(int dialogType, Jobs job) {
+    public static CompanyDialogFragment newInstance(int dialogType, Jobs job) {
         Bundle args = new Bundle();
         args.putInt(ARGS_DIALOG_TYPE, dialogType);
         args.putParcelable(ARGS_DIALOG_JOB_OBJECT, job);
-        JobDetailDialogFragment fragment = new JobDetailDialogFragment();
+        CompanyDialogFragment fragment = new CompanyDialogFragment();
         fragment.setArguments(args);
         return fragment;
     }
@@ -54,9 +56,11 @@ public class JobDetailDialogFragment extends DialogFragment {
         setCancelable(false);
         dialogDetailType = getArguments().getInt(ARGS_DIALOG_TYPE);
         mJob = (Jobs) getArguments().getParcelable(ARGS_DIALOG_JOB_OBJECT);
-        currentUID= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        auth = FirebaseAuth.getInstance();
+        currentUID= auth.getCurrentUser().getUid();
+
         setButtonName();
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.student_detail_dialog_view, null);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.company_detail_dialog_view, null);
         tCompanyName = view.findViewById(R.id.d_company_name);
         tJobType = view.findViewById(R.id.d_job_type);
         tJobDescription = view.findViewById(R.id.d_job_description);
@@ -68,13 +72,13 @@ public class JobDetailDialogFragment extends DialogFragment {
                         setPositiveButton(posButtonText, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                dismiss();
+                                mAction();
                             }
                         }).
                         setNegativeButton(negButtonText, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                JobDetailDialogFragment.this.getDialog().cancel();
+                                CompanyDialogFragment.this.getDialog().cancel();
                             }
                         }).create();
 
@@ -82,19 +86,23 @@ public class JobDetailDialogFragment extends DialogFragment {
         return detailDialog;
     }
 
-    /*public void mAction() {
+    public void mAction() {
 
-        if (dialogDetailType == R.string.student_job_dialog) {
-            HashMap<String,String> detials = new HashMap<>();
-            detials.put(currentUID,FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-            FirebaseDatabase.getInstance().getReference("applied").child(mJob.getJobKey()).setValue(detials);
+        if (dialogDetailType == R.string.company_appplied_ob_dialog) {
+            String vancy = tJobVacancy.getText().toString();
+            String des= tJobDescription.getText().toString();
+
+            if (!TextUtils.isEmpty(vancy)&&!TextUtils.isEmpty(des)){
+            Jobs jobs = new Jobs(mJob.getJobType(),mJob.getJobKey(),des,vancy,currentUID);
+            FirebaseDatabase.getInstance().getReference("jobs").child(mJob.getJobKey()).setValue(jobs);
+            }
         }
-    }*/
+    }
 
     public void setButtonName() {
         negButtonText = "Cancel";
-        if (dialogDetailType == R.string.student_job_dialog) {
-            posButtonText = "OK";
+        if (dialogDetailType == R.string.company_appplied_ob_dialog) {
+            posButtonText = "Update";
         } else if (dialogDetailType == R.string.company_job_dialog) {
             posButtonText = "Delete";
         }
@@ -110,31 +118,16 @@ public class JobDetailDialogFragment extends DialogFragment {
     }
 
     public void updateUi() {
-        if (dialogDetailType == R.string.student_job_dialog) {
+        if (dialogDetailType == R.string.company_appplied_ob_dialog) {
             tJobDescription.setText(mJob.getJobDescription());
-            setCompanyName(mJob.getCompanyKey());
+            tCompanyName.setText(auth.getCurrentUser().getDisplayName().toString());
             tJobType.setText("Job type: " + mJob.getJobType());
-            tJobVacancy.setText("Vacancy: " + mJob.getJobVacancy());
+            tJobVacancy.setText( mJob.getJobVacancy());
 
         } else if (dialogDetailType == R.string.company_job_dialog) {
             posButtonText = "Delete";
         }
     }
 
-    public void setCompanyName(String key) {
-        comName = "";
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("company").child(key);
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                comName = dataSnapshot.child("name").getValue(String.class);
-                tCompanyName.setText(comName);
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
 }

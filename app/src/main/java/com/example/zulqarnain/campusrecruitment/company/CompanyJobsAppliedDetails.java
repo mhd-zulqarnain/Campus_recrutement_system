@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.adapters.JobAdapter;
+import com.example.zulqarnain.campusrecruitment.company.adapters.JobAppliedAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
  * Created by Zul Qarnain on 11/6/2017.
  */
 
-public class CompanyDashboardFragment extends Fragment {
+public class CompanyJobsAppliedDetails extends Fragment {
     private DatabaseReference ref;
     private FirebaseAuth auth;
     private RecyclerView rJoblist;
@@ -33,13 +34,13 @@ public class CompanyDashboardFragment extends Fragment {
     private final String TAG = "test";
     String comkey;
 
-    JobAdapter adapter;
+    JobAppliedAdapter adapter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.company_dashboard_fragment, container, false);
-        rJoblist = v.findViewById(R.id.job_list_view);
+        View v = inflater.inflate(R.layout.company_jobs_applied_layout, container, false);
+        rJoblist = v.findViewById(R.id.com_job_applied_recycler);
         updateUi();
         return v;
     }
@@ -55,17 +56,17 @@ public class CompanyDashboardFragment extends Fragment {
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAdapter(getContext(), jobs, ref);
+        adapter = new JobAppliedAdapter(getContext(), jobs, ref);
         rJoblist.setLayoutManager(new LinearLayoutManager(getContext()));
         rJoblist.setAdapter(adapter);
 
-        Log.d(TAG, "updateUi: apicalled");
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Jobs job = dataSnapshot.getValue(Jobs.class);
                 if (job.getCompanyKey().equals(comkey)) {
                     jobs.add(job);
+                    Log.d(TAG, "onChildAdded: applied student com");
                     adapter.notifyDataSetChanged();
                 }
             }

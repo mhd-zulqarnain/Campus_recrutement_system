@@ -17,6 +17,7 @@
     <string name="add_task_dialog_title">Add Task</string>
     <string name="student_job_dialog">studentDilaogDetail</string>
     <string name="company_job_dialog">companyDilaogDetail</string>
+    <string name="company_appplied_ob_dialog">appliedStudentOnJob</string>
     <string-array name="sign_up_type">
         <item>Student</item>
         <item>Company</item>

@@ -9,77 +9,101 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.Jobs;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.zulqarnain.campusrecruitment.students.adapter.AdapterNewJob;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Zul Qarnain on 11/6/2017.
  */
 
-public class StudentDashboardFragment extends Fragment{
-    private Spinner mSpinner;
+public class NewJobFragment extends Fragment {
     private RecyclerView mRecyclerDash;
     private DatabaseReference ref;
     private String TAG = "test";
     ArrayList<Jobs> jobList;
     AdapterNewJob adapter;
     static boolean applied = false;
+    ChildEventListener mListener;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.student_dashboard_fragment, container, false);
-        mSpinner = v.findViewById(R.id.std_dash_nav_type);
         mRecyclerDash = v.findViewById(R.id.std_recycler_dash);
         mRecyclerDash.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.dash_type,
-                android.R.layout.simple_spinner_dropdown_item);
-        mSpinner.setAdapter(adapter);
-        mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                updateUi(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Messege.messege(getContext(), "sleceted nothing");
-
-            }
-        });
+        updateUi();
         return v;
     }
 
-    private void updateUi(int option) {
+    private void updateUi() {
         jobList = new ArrayList<>();
-        adapter = new AdapterNewJob(getContext(), jobList);
-        mRecyclerDash.setAdapter(adapter);
+        ref = FirebaseDatabase.getInstance().getReference("jobs");
+            jobList.clear();
+            adapter = new AdapterNewJob(getContext(), jobList);
+            mRecyclerDash.setAdapter(adapter);
 
-        if (option == 0) {
-            final String selected = "newJob";
-            ref = FirebaseDatabase.getInstance().getReference("jobs");
+                if(mListener == null) {
+                    mListener = new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            Jobs job = dataSnapshot.getValue(Jobs.class);
+                            String d = dataSnapshot.getKey();
+
+                            jobList.add(job);
+                            adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            Jobs job = dataSnapshot.getValue(Jobs.class);
+                            int index = getIndex(job.getJobKey());
+                            if (index != -1) {
+                                jobList.set(index, job);
+                                adapter.notifyItemChanged(index);
+                            }
+                        }
+
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            Jobs job = dataSnapshot.getValue(Jobs.class);
+                            int index = getIndex(job.getJobKey());
+                            if (index != -1) {
+                                jobList.remove(index);
+                                adapter.notifyItemRemoved(index);
+                            }
+                        }
+
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    };
+                    ref.addChildEventListener(mListener);
+                }
+        /*} else if (option == 1) {
+            Log.d(TAG, "updateUi: applied");
+            appliedadapter = new AppliedJobAdapter(getContext(), jobList);
+            mRecyclerDash.setAdapter(appliedadapter);
+
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     Jobs job = dataSnapshot.getValue(Jobs.class);
                     jobList.add(job);
-                    adapter.notifyDataSetChanged();
+
+                    appliedadapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -87,17 +111,15 @@ public class StudentDashboardFragment extends Fragment{
                     Jobs job = dataSnapshot.getValue(Jobs.class);
                     int index = getIndex(job.getJobKey());
                     jobList.set(index, job);
-                    adapter.notifyItemChanged(index);
+                    appliedadapter.notifyItemChanged(index);
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     Jobs job = dataSnapshot.getValue(Jobs.class);
                     int index = getIndex(job.getJobKey());
-                    if (index != -1) {
-                        jobList.remove(index);
-                        adapter.notifyItemRemoved(index);
-                    }
+                    jobList.remove(index);
+                    appliedadapter.notifyItemRemoved(index);
                 }
 
                 @Override
@@ -108,43 +130,27 @@ public class StudentDashboardFragment extends Fragment{
                 public void onCancelled(DatabaseError databaseError) {
                 }
             });
-        } else if (option == 1) {
-            final String selected = "applied";
-
-          /*  ref = FirebaseDatabase.getInstance().getReference("jobs");
-            ref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
-                    int index = getIndex(job.getJobKey());
-                    jobList.set(index, job);
-                    adapter.notifyItemChanged(index);
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
-                    int index = getIndex(job.getJobKey());
-                    jobList.remove(index);
-                    adapter.notifyItemRemoved(index);
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });*/
-        }
+        }*/
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser==true){
+            if (mRecyclerDash!=null){
+                updateUi();
+                Log.d(TAG, "setUserVisibleHint:new  update");
+
+        }else
+            {
+                Log.d(TAG, "setUserVisibleHint:new  remove listner");
+                if(mListener!=null&&mRecyclerDash!=null){
+//                    ref.removeEventListener(mListener);
+                }
+
+            }
+        }
+    }
     public int getIndex(String jobkey) {
         for (int i = 0; i < jobList.size(); i++) {
             if (jobkey.equals(jobList.get(i).getJobKey())) {

@@ -23,6 +23,7 @@ public class StudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
+        setTitle("Student");
         auth = FirebaseAuth.getInstance();
         mViewPager= (ViewPager) findViewById(R.id.student_view_pager);
         StudentPagerAdapter adapter = new StudentPagerAdapter(getSupportFragmentManager());
@@ -55,19 +56,21 @@ public class StudentActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             if(position==0){
-                return new StudentDashboardFragment();
+                NewJobFragment fragment= new NewJobFragment();
+                return fragment;
             }
             else if(position==1){
-                return new ProfileFragment();
+                AppliedJobFragment fragment = new AppliedJobFragment();
+                return fragment;
 
             }
             return null;
         }
         public CharSequence getPageTitle(int position) {
             if(position==0)
-                return "Student dashboard";
+                return "New Jobs";
             else
-                return "Student Profile";
+                return "Applied Jobs";
 
 
 

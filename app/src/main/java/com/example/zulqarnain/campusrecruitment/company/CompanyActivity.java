@@ -12,8 +12,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.students.*;
-import com.example.zulqarnain.campusrecruitment.students.ProfileFragment;
 import com.example.zulqarnain.campusrecruitment.ui.activities.LoginActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -63,19 +61,23 @@ public class CompanyActivity extends AppCompatActivity {
             }
             else if(position==1){
                 return new AddingJobFragment();
+            }else if(position==2){
+                return new CompanyJobsAppliedDetails();
             }
             return null;
         }
         public CharSequence getPageTitle(int position) {
             if(position==0)
                 return "Company dashboard";
-            else
+            else if(position==1)
                 return "Job Portal";
+            else
+                return "Applied ";
 
         }
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
