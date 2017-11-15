@@ -39,7 +39,6 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
         this.jobList = jobs;
         this.key = FirebaseAuth.getInstance().getCurrentUser().getUid();
         this.mDatabase = FirebaseDatabase.getInstance().getReference("applied");
-
     }
 
     @Override
@@ -85,7 +84,6 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
             tp.setText("Type:" + mjob.getJobType());
             ds.setText("Descripton:" + mjob.getJobDescription());
             vc.setText("Vacancy:" + mjob.getJobVacancy());
-            btnEnable();
         }
 
         @Override
@@ -95,9 +93,7 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
                 DialogFragment fragment = JobDetailDialogFragment.newInstance(R.string.student_job_dialog, mjob);
                 fragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "myDialog");
             } else if (view.getId() == R.id.btn_apply) {
-
                 DatabaseReference df = FirebaseDatabase.getInstance().getReference("jobs").child(mjob.getJobKey()).child("canidates");
-
                 df.child(key).setValue(true);
                 /*int index = getIndex(mjob.getJobKey());
                 jobList.remove(mjob);
@@ -106,41 +102,11 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
             }
         }
 
-        public int getIndex(String jobkey) {
-            for (int i = 0; i < jobList.size(); i++) {
-                if (jobkey.equals(jobList.get(i).getJobKey())) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
         public String getName() {
             return FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         }
 
-        public void btnEnable() {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("applied").child(mjob.getJobKey());
 
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    {
-                        if (getAdapterPosition() != -1) {
-                            if (dataSnapshot.hasChild(key)) {
-                                Log.d("asd", "onDataChange: calleded " + getAdapterPosition());
-                                jobList.remove(mjob);
-                                notifyDataSetChanged();
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }
 
     }
 }

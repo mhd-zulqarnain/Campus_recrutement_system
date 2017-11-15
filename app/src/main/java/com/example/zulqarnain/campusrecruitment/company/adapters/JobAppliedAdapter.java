@@ -1,6 +1,7 @@
 package com.example.zulqarnain.campusrecruitment.company.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.CompanyDialogFragment;
 import com.example.zulqarnain.campusrecruitment.company.Jobs;
+import com.example.zulqarnain.campusrecruitment.utils.Messege;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -60,7 +62,7 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
         return jobList.size();
     }
 
-    public class ViewJobHolder extends RecyclerView.ViewHolder {
+    public class ViewJobHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView tDes;
         private TextView tAppNum;
@@ -70,31 +72,34 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
             super(itemView);
             tDes= itemView.findViewById(R.id.t_com_applied_job_des);
             tAppNum= itemView.findViewById(R.id.t_com_applied_applicant_num);
+            itemView.setEnabled(true);
+            itemView.setOnClickListener(this);
         }
 
         public void bindView(Jobs mjob) {
             this.mjob = mjob;
             tDes.setText("Title:" +mjob.getJobDescription());
-            filter();
+            getNumberOfApplicants();
 
-//            tAppNum.setText("Number of applicants:" + mjob.getJobVacancy());
         }
-        public void filter(){
-            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("applied").child(mjob.getJobKey());
+        public void getNumberOfApplicants(){
+            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("jobs").child(mjob.getJobKey()).child("canidates");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                   String num= String.valueOf(dataSnapshot.getChildrenCount());
                     tAppNum.setText("Number of applicants: "+num);
                 }
-
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
                 }
             });
-
         }
 
+        @Override
+        public void onClick(View view) {
+            Messege.messege(mContext,"clicked");
+        }
     }
 }

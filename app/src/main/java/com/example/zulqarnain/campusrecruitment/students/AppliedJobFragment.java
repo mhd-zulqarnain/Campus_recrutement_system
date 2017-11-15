@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.Jobs;
 import com.example.zulqarnain.campusrecruitment.students.adapter.AppliedJobAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +35,7 @@ public class AppliedJobFragment extends Fragment {
     ArrayList<Jobs> jobList;
     AppliedJobAdapter appliedAdapter;
     ChildEventListener listner;
+    String userUID;
     private HashMap<DatabaseReference, ChildEventListener> hashMap = new HashMap<>();
 
 
@@ -43,58 +45,74 @@ public class AppliedJobFragment extends Fragment {
         View v = inflater.inflate(R.layout.student_profile_fragment, container, false);
         mRecyclerDash = v.findViewById(R.id.std_recycler_dash);
         mRecyclerDash.setLayoutManager(new LinearLayoutManager(getActivity()));
-        //updateUi();
+        updateUi();
         return v;
     }
 
     private void updateUi() {
         jobList = new ArrayList<>();
+        userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         ref = FirebaseDatabase.getInstance().getReference("jobs");
         jobList.clear();
         appliedAdapter = new AppliedJobAdapter(getContext(), jobList);
         mRecyclerDash.setAdapter(appliedAdapter);
-            listner = new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+        listner = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                DataSnapshot snp = dataSnapshot.child("canidates").child(userUID);
+                Log.d(TAG, "onChildAdded: fired applied");
+                if (snp.exists()) {
                     DataSnapshot snapshot = dataSnapshot.child("details");
                     Jobs job = snapshot.getValue(Jobs.class);
                     jobList.add(job);
-                    Log.d(TAG, "onChildAdded: ");
                     appliedAdapter.notifyDataSetChanged();
                 }
+            }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    DataSnapshot snapshot = dataSnapshot.child("details");
-                    Jobs job = snapshot.getValue(Jobs.class);
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
+
+                Log.d(TAG, "onChildChanged: " + snapshot);
+                DataSnapshot snp = dataSnapshot.child("canidates").child(userUID);
+                if (!snp.exists()) {
+
+                    int index = getIndex(job.getJobKey());
+                    if (index != -1) {
+                        jobList.remove(index);
+                        appliedAdapter.notifyItemRemoved(index);
+                    }
+                } else {
                     int index = getIndex(job.getJobKey());
                     if (index != -1) {
                         jobList.set(index, job);
                         appliedAdapter.notifyItemChanged(index);
                     }
                 }
+            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    DataSnapshot snapshot = dataSnapshot.child("details");
-                    Jobs job = snapshot.getValue(Jobs.class);
-                    int index = getIndex(job.getJobKey());
-                    if (index != -1) {
-                        jobList.remove(index);
-                        appliedAdapter.notifyItemRemoved(index);
-                    }
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
+                int index = getIndex(job.getJobKey());
+                if (index != -1) {
+                    jobList.remove(index);
+                    appliedAdapter.notifyItemRemoved(index);
                 }
+            }
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            };
-            ref.addChildEventListener(listner);
-        }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        ref.addChildEventListener(listner);
+    }
 
     public int getIndex(String jobkey) {
         for (int i = 0; i < jobList.size(); i++) {
@@ -114,17 +132,11 @@ public class AppliedJobFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser == true) {
+            Log.d(TAG, "setUserVisibleHint:applied update");
             if (mRecyclerDash != null) {
-               // updateUi();
-
+                ref.removeEventListener(listner);
+                updateUi();
             }
-        } else {
-            Log.d(TAG, "setUserVisibleHint:applied remove");
-            if (listner != null) {
-
-                //ref.removeEventListener(listner);
-            }
-
         }
     }
 

@@ -34,7 +34,6 @@ public class NewJobFragment extends Fragment {
     AdapterNewJob adapter;
     String userUID;
     String userName;
-    static boolean applied = false;
     ChildEventListener mListener;
 
     @Nullable
@@ -52,7 +51,6 @@ public class NewJobFragment extends Fragment {
         userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         ref = FirebaseDatabase.getInstance().getReference("jobs");
-        jobList.clear();
         adapter = new AdapterNewJob(getContext(), jobList);
         mRecyclerDash.setAdapter(adapter);
 
@@ -119,17 +117,12 @@ public class NewJobFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser == true) {
+            Log.d(TAG, "setUserVisibleHint:new  update");
             if (mRecyclerDash != null) {
+                ref.removeEventListener(mListener);
                 updateUi();
-                Log.d(TAG, "setUserVisibleHint:new  update");
-
-            } else {
-                Log.d(TAG, "setUserVisibleHint:new  remove listner");
-                if (mListener != null && mRecyclerDash != null) {
-//                    ref.removeEventListener(mListener);
-                }
-
             }
+
         }
     }
 
