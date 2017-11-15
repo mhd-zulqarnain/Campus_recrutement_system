@@ -43,7 +43,7 @@ public class AppliedJobFragment extends Fragment {
         View v = inflater.inflate(R.layout.student_profile_fragment, container, false);
         mRecyclerDash = v.findViewById(R.id.std_recycler_dash);
         mRecyclerDash.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateUi();
+        //updateUi();
         return v;
     }
 
@@ -53,11 +53,11 @@ public class AppliedJobFragment extends Fragment {
         jobList.clear();
         appliedAdapter = new AppliedJobAdapter(getContext(), jobList);
         mRecyclerDash.setAdapter(appliedAdapter);
-        if(listner ==null) {
             listner = new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    DataSnapshot snapshot = dataSnapshot.child("details");
+                    Jobs job = snapshot.getValue(Jobs.class);
                     jobList.add(job);
                     Log.d(TAG, "onChildAdded: ");
                     appliedAdapter.notifyDataSetChanged();
@@ -65,7 +65,8 @@ public class AppliedJobFragment extends Fragment {
 
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    DataSnapshot snapshot = dataSnapshot.child("details");
+                    Jobs job = snapshot.getValue(Jobs.class);
                     int index = getIndex(job.getJobKey());
                     if (index != -1) {
                         jobList.set(index, job);
@@ -75,7 +76,8 @@ public class AppliedJobFragment extends Fragment {
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                    DataSnapshot snapshot = dataSnapshot.child("details");
+                    Jobs job = snapshot.getValue(Jobs.class);
                     int index = getIndex(job.getJobKey());
                     if (index != -1) {
                         jobList.remove(index);
@@ -93,7 +95,6 @@ public class AppliedJobFragment extends Fragment {
             };
             ref.addChildEventListener(listner);
         }
-    }
 
     public int getIndex(String jobkey) {
         for (int i = 0; i < jobList.size(); i++) {
@@ -114,7 +115,7 @@ public class AppliedJobFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser == true) {
             if (mRecyclerDash != null) {
-                updateUi();
+               // updateUi();
 
             }
         } else {
@@ -124,14 +125,6 @@ public class AppliedJobFragment extends Fragment {
                 //ref.removeEventListener(listner);
             }
 
-        }
-    }
-
-    public void removeValueEventListener(HashMap<DatabaseReference, ChildEventListener> hashMap) {
-        for (Map.Entry<DatabaseReference, ChildEventListener> entry : hashMap.entrySet()) {
-            DatabaseReference databaseReference = entry.getKey();
-            ChildEventListener valueEventListener = entry.getValue();
-            databaseReference.removeEventListener(valueEventListener);
         }
     }
 

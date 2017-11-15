@@ -94,7 +94,7 @@ public class CompanyDialogFragment extends DialogFragment {
 
             if (!TextUtils.isEmpty(vancy)&&!TextUtils.isEmpty(des)){
             Jobs jobs = new Jobs(mJob.getJobType(),mJob.getJobKey(),des,vancy,currentUID);
-            FirebaseDatabase.getInstance().getReference("jobs").child(mJob.getJobKey()).setValue(jobs);
+            FirebaseDatabase.getInstance().getReference("jobs").child(mJob.getJobKey()).child("details").setValue(jobs);
             }
         }
     }

@@ -87,10 +87,9 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.btn_dlt) {
-                String key = mjob.getJobKey();
-                ref.child(key).removeValue();
-                Log.d("viewholder", "onClick: " + getAdapterPosition());
-                FirebaseDatabase.getInstance().getReference("applied").child(mjob.getJobKey()).removeValue();
+             String key = mjob.getJobKey();
+             ref.child(key).removeValue();
+
             }
             else if(view.getId()==R.id.com_btn_applied){
                 DialogFragment dialogFragment = CompanyDialogFragment.newInstance(R.string.company_appplied_ob_dialog,mjob);

@@ -50,7 +50,7 @@ public class CompanyDashboardFragment extends Fragment {
         auth = FirebaseAuth.getInstance();
         comkey = auth.getCurrentUser().getUid();
 
-        ref = FirebaseDatabase.getInstance().getReference("jobs").child("details");
+        ref = FirebaseDatabase.getInstance().getReference("jobs");
     }
 
     private void updateUi() {
@@ -63,7 +63,8 @@ public class CompanyDashboardFragment extends Fragment {
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Jobs job = dataSnapshot.getValue(Jobs.class);
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
                 if (job.getCompanyKey().equals(comkey)) {
                     jobs.add(job);
                     adapter.notifyDataSetChanged();
@@ -72,7 +73,8 @@ public class CompanyDashboardFragment extends Fragment {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Jobs job= dataSnapshot.getValue(Jobs.class);
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
                 jobs.set(index,job);
                 adapter.notifyItemChanged(index);
@@ -80,7 +82,8 @@ public class CompanyDashboardFragment extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Jobs job= dataSnapshot.getValue(Jobs.class);
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
                 jobs.remove(index);
                 adapter.notifyDataSetChanged();

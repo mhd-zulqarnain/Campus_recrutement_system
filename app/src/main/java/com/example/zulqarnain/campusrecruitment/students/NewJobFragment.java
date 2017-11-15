@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.Jobs;
 import com.example.zulqarnain.campusrecruitment.students.adapter.AdapterNewJob;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,6 +32,8 @@ public class NewJobFragment extends Fragment {
     private String TAG = "test";
     ArrayList<Jobs> jobList;
     AdapterNewJob adapter;
+    String userUID;
+    String userName;
     static boolean applied = false;
     ChildEventListener mListener;
 
@@ -46,111 +49,90 @@ public class NewJobFragment extends Fragment {
 
     private void updateUi() {
         jobList = new ArrayList<>();
+        userUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         ref = FirebaseDatabase.getInstance().getReference("jobs");
-            jobList.clear();
-            adapter = new AdapterNewJob(getContext(), jobList);
-            mRecyclerDash.setAdapter(adapter);
+        jobList.clear();
+        adapter = new AdapterNewJob(getContext(), jobList);
+        mRecyclerDash.setAdapter(adapter);
 
-                if(mListener == null) {
-                    mListener = new ChildEventListener() {
-                        @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            Jobs job = dataSnapshot.getValue(Jobs.class);
-                            String d = dataSnapshot.getKey();
+        mListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                DataSnapshot snp = dataSnapshot.child("canidates").child(userUID);
 
-                            jobList.add(job);
-                            adapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                            Jobs job = dataSnapshot.getValue(Jobs.class);
-                            int index = getIndex(job.getJobKey());
-                            if (index != -1) {
-                                jobList.set(index, job);
-                                adapter.notifyItemChanged(index);
-                            }
-                        }
-
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
-                            Jobs job = dataSnapshot.getValue(Jobs.class);
-                            int index = getIndex(job.getJobKey());
-                            if (index != -1) {
-                                jobList.remove(index);
-                                adapter.notifyItemRemoved(index);
-                            }
-                        }
-
-                        @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    };
-                    ref.addChildEventListener(mListener);
-                }
-        /*} else if (option == 1) {
-            Log.d(TAG, "updateUi: applied");
-            appliedadapter = new AppliedJobAdapter(getContext(), jobList);
-            mRecyclerDash.setAdapter(appliedadapter);
-
-            ref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
+                if (!snp.exists()) {
+                    DataSnapshot snapshot = dataSnapshot.child("details");
+                    Jobs job = snapshot.getValue(Jobs.class);
                     jobList.add(job);
-
-                    appliedadapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
                 }
 
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
-                    int index = getIndex(job.getJobKey());
-                    jobList.set(index, job);
-                    appliedadapter.notifyItemChanged(index);
-                }
+            }
 
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    Jobs job = dataSnapshot.getValue(Jobs.class);
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
+
+                Log.d(TAG, "onChildChanged: " + snapshot);
+                DataSnapshot snp = dataSnapshot.child("canidates").child(userUID);
+                if (snp.exists()) {
+
                     int index = getIndex(job.getJobKey());
+                    if (index != -1) {
+                        jobList.remove(index);
+                        adapter.notifyItemRemoved(index);
+                    }
+                } else {
+                    int index = getIndex(job.getJobKey());
+                    if (index != -1) {
+                        jobList.set(index, job);
+                        adapter.notifyItemChanged(index);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
+                int index = getIndex(job.getJobKey());
+                if (index != -1) {
                     jobList.remove(index);
-                    appliedadapter.notifyItemRemoved(index);
+                    adapter.notifyItemRemoved(index);
                 }
+            }
 
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                }
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+            }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }*/
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        };
+        ref.addChildEventListener(mListener);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser==true){
-            if (mRecyclerDash!=null){
+        if (isVisibleToUser == true) {
+            if (mRecyclerDash != null) {
                 updateUi();
                 Log.d(TAG, "setUserVisibleHint:new  update");
 
-        }else
-            {
+            } else {
                 Log.d(TAG, "setUserVisibleHint:new  remove listner");
-                if(mListener!=null&&mRecyclerDash!=null){
+                if (mListener != null && mRecyclerDash != null) {
 //                    ref.removeEventListener(mListener);
                 }
 
             }
         }
     }
+
     public int getIndex(String jobkey) {
         for (int i = 0; i < jobList.size(); i++) {
             if (jobkey.equals(jobList.get(i).getJobKey())) {
@@ -160,69 +142,5 @@ public class NewJobFragment extends Fragment {
         return -1;
     }
 
-
-
-    /*public Boolean hasApply(final Jobs job, final String status, final String option) {
-        applied = false;
-
-        final String studentID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("applied").child(job.getJobKey());
-
-        if (option.equals("newJob")) {
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (!dataSnapshot.child(studentID).exists()) {
-                        if (status.equals("add")) {
-                            if(getIndex(job.getJobKey())==0){
-                                jobList.add(job);
-                                Log.d(TAG, "onDataChange: apply");
-                                adapter.notifyDataSetChanged();
-
-                            }
-                        } else if (status.equals("changed")) {
-                            int index = getIndex(job.getJobKey());
-                            jobList.set(index, job);
-                            adapter.notifyItemChanged(index);
-                        } else if (status.equals("remove")) {
-                            int index = getIndex(job.getJobKey());
-                            jobList.remove(index);
-                            adapter.notifyItemRemoved(index);
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        } else if (option.equals("applied")) {
-            ref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.child(studentID).exists()) {
-                        Log.d(TAG, "onDataChange: exists");
-                        if (status.equals("add")) {
-                            jobList.add(job);
-                            adapter.notifyDataSetChanged();
-                        } else if (status.equals("changed")) {
-                            int index = getIndex(job.getJobKey());
-                            jobList.set(index, job);
-                            adapter.notifyItemChanged(index);
-                        } else if (status.equals("remove")) {
-                            int index = getIndex(job.getJobKey());
-                            jobList.remove(index);
-                            adapter.notifyItemRemoved(index);
-                        }
-                    }
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
-        }
-        return applied;
-
-
-    }*/
 }
 

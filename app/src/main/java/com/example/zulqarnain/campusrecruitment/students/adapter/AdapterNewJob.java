@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.Jobs;
 import com.example.zulqarnain.campusrecruitment.students.JobDetailDialogFragment;
+import com.example.zulqarnain.campusrecruitment.utils.Messege;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -95,11 +96,12 @@ public class AdapterNewJob extends RecyclerView.Adapter<AdapterNewJob.NewJobHold
                 fragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "myDialog");
             } else if (view.getId() == R.id.btn_apply) {
 
-                DatabaseReference df = FirebaseDatabase.getInstance().getReference("applied/" + mjob.getJobKey());
-                df.child(key).setValue(getName());
-                int index = getIndex(mjob.getJobKey());
+                DatabaseReference df = FirebaseDatabase.getInstance().getReference("jobs").child(mjob.getJobKey()).child("canidates");
+
+                df.child(key).setValue(true);
+                /*int index = getIndex(mjob.getJobKey());
                 jobList.remove(mjob);
-                notifyItemRemoved(index);
+                notifyItemRemoved(index);*/
 
             }
         }
