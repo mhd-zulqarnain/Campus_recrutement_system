@@ -1,21 +1,16 @@
 package com.example.zulqarnain.campusrecruitment.company.adapters;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.CompanyDialogFragment;
-import com.example.zulqarnain.campusrecruitment.company.Jobs;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
+import com.example.zulqarnain.campusrecruitment.company.CompanyJobsAppliedActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -99,7 +94,10 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
 
         @Override
         public void onClick(View view) {
-            Messege.messege(mContext,"clicked");
+
+            Intent intent  = new Intent(mContext.getApplicationContext(), CompanyJobsAppliedActivity.class);
+            intent.putExtra("jobKey",mjob.getJobKey());
+            mContext.startActivity(intent);
         }
     }
 }

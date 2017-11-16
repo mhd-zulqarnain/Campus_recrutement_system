@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +11,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.Jobs;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.example.zulqarnain.campusrecruitment.students.JobDetailDialogFragment;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 

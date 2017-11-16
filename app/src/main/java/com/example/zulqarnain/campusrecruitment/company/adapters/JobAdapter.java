@@ -13,9 +13,8 @@ import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.CompanyDialogFragment;
-import com.example.zulqarnain.campusrecruitment.company.Jobs;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 

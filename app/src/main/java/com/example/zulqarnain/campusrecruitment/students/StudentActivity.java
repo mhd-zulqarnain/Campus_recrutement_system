@@ -23,6 +23,8 @@ public class StudentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         setTitle("Student");
         auth = FirebaseAuth.getInstance();
         mViewPager= (ViewPager) findViewById(R.id.student_view_pager);
@@ -43,6 +45,13 @@ public class StudentActivity extends AppCompatActivity {
             auth.signOut();
             startActivity(new Intent(StudentActivity.this,LoginActivity.class));
             finish();
+        }
+        if(item.getItemId()==R.id.menu_profile){
+            startActivity(new Intent(StudentActivity.this,StudentProfileActivity.class));
+            finish();
+        }
+        else if(item.getItemId()==android.R.id.home){
+            this.finish();
         }
         return  true;
     }

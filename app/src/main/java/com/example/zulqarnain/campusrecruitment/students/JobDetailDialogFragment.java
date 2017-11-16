@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.Jobs;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;

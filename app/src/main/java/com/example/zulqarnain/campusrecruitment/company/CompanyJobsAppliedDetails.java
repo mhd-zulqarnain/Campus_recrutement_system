@@ -5,14 +5,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.adapters.JobAdapter;
 import com.example.zulqarnain.campusrecruitment.company.adapters.JobAppliedAdapter;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -67,7 +66,6 @@ public class CompanyJobsAppliedDetails extends Fragment {
                 Jobs job = snapshot.getValue(Jobs.class);
                 if (job.getCompanyKey().equals(comkey)) {
                     jobs.add(job);
-                    Log.d(TAG, "onChildAdded: applied student com");
                     adapter.notifyDataSetChanged();
                 }
             }

@@ -1,4 +1,4 @@
-package com.example.zulqarnain.campusrecruitment.company;
+package com.example.zulqarnain.campusrecruitment.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

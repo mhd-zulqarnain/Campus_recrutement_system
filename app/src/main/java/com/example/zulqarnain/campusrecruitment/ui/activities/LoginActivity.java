@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity  {
         Intent intent = new Intent(this, SignUpActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
+//        finish();
     }
 
     //checking the user type from firebasedatabase

@@ -7,6 +7,7 @@
     <string name="action_sign_in">Sign in </string>
     <string name="action_sign_up">Sign up</string>
     <string name="menu_sign_out">Sign out</string>
+    <string name="menu_stud_profile">Profile</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
@@ -20,6 +21,8 @@
     <string name="company_appplied_ob_dialog">appliedStudentOnJob</string>
     <string name="canidate_node">canidate</string>
     <string name="details_node">details</string>
+    <string name="tudent_profile_name">Name</string>
+    <string name="tudent_profile_semister">Semister</string>
     <string-array name="sign_up_type">
         <item>Student</item>
         <item>Company</item>
@@ -33,4 +36,5 @@
         <item>New Jobs</item>
         <item>Applied</item>
     </string-array>
+    <string name="title_activity_student_applied">StudentAppliedActivity</string>
 </resources>

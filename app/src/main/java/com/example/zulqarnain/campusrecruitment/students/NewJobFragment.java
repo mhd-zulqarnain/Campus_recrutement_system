@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.Jobs;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.example.zulqarnain.campusrecruitment.students.adapter.AdapterNewJob;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;

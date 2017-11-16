@@ -7,13 +7,13 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.zulqarnain.campusrecruitment.R;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.example.zulqarnain.campusrecruitment.utils.Messege;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
