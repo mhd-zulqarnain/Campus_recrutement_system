@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +57,6 @@ public class AppliedJobFragment extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 DataSnapshot snp = dataSnapshot.child("canidates").child(userUID);
-                Log.d(TAG, "onChildAdded: fired applied");
                 if (snp.exists()) {
                     DataSnapshot snapshot = dataSnapshot.child("details");
                     Jobs job = snapshot.getValue(Jobs.class);
@@ -72,7 +70,6 @@ public class AppliedJobFragment extends Fragment {
                 DataSnapshot snapshot = dataSnapshot.child("details");
                 Jobs job = snapshot.getValue(Jobs.class);
 
-                Log.d(TAG, "onChildChanged: " + snapshot);
                 DataSnapshot snp = dataSnapshot.child("canidates").child(userUID);
                 if (!snp.exists()) {
 
@@ -130,7 +127,6 @@ public class AppliedJobFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser == true) {
-            Log.d(TAG, "setUserVisibleHint:applied update");
             if (mRecyclerDash != null) {
                 ref.removeEventListener(listner);
                 updateUi();

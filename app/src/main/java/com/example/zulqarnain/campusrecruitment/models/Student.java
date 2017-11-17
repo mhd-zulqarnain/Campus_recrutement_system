@@ -5,23 +5,16 @@ package com.example.zulqarnain.campusrecruitment.models;
  */
 
 public class Student {
-    public String name;
     public String semister;
+    public String department;
+
+    public Student(String semister, String department) {
+        this.semister = semister;
+        this.department = department;
+    }
 
     public Student() {
-    }
 
-    public Student(String name,String semister) {
-        this.semister=semister;
-        this.name=name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getSemister() {
@@ -30,5 +23,13 @@ public class Student {
 
     public void setSemister(String semister) {
         this.semister = semister;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 }

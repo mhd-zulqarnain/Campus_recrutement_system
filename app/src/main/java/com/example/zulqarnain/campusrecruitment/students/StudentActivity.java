@@ -24,14 +24,13 @@ public class StudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         setTitle("Student");
         auth = FirebaseAuth.getInstance();
         mViewPager= (ViewPager) findViewById(R.id.student_view_pager);
         StudentPagerAdapter adapter = new StudentPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
-
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -48,7 +47,6 @@ public class StudentActivity extends AppCompatActivity {
         }
         if(item.getItemId()==R.id.menu_profile){
             startActivity(new Intent(StudentActivity.this,StudentProfileActivity.class));
-            finish();
         }
         else if(item.getItemId()==android.R.id.home){
             this.finish();
@@ -80,9 +78,6 @@ public class StudentActivity extends AppCompatActivity {
                 return "New Jobs";
             else
                 return "Applied Jobs";
-
-
-
         }
         @Override
         public int getCount() {
