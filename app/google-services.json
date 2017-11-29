@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "4483087538",
-    "firebase_url": "https://testbehaviour-fed5a.firebaseio.com",
-    "project_id": "testbehaviour-fed5a",
-    "storage_bucket": "testbehaviour-fed5a.appspot.com"
+    "project_number": "401856446976",
+    "firebase_url": "https://pizzadelivery-d4ea0.firebaseio.com",
+    "project_id": "pizzadelivery-d4ea0",
+    "storage_bucket": "pizzadelivery-d4ea0.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:4483087538:android:5ec54c9226d78598",
+        "mobilesdk_app_id": "1:401856446976:android:94b7783f7e82e4d6",
         "android_client_info": {
-          "package_name": "com.example.zulqarnain.friendlychat"
+          "package_name": "com.example.zulqarnain.functiondemo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "4483087538-ttqss2mkal8psls9urpn8cp09sbg1570.apps.googleusercontent.com",
+          "client_id": "401856446976-ndlpdl0mfp05sjtstrlr9qje4t08eifo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.zulqarnain.friendlychat",
+            "package_name": "com.example.zulqarnain.functiondemo",
             "certificate_hash": "65b532bde8508737e652a676d9e096a8bee298c4"
           }
         },
         {
-          "client_id": "4483087538-kp1tfbauv01bf06bknjbbmkuas8fumrt.apps.googleusercontent.com",
+          "client_id": "401856446976-nf3t5itv4dps3bu5jm04ruj5nfriec4n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAGoGg65gvLULwDWM03hBk6lMpvpYK5HfI"
+          "current_key": "AIzaSyAV1YNGgZhVPealJiQBUbwECOdGL78S2yo"
         }
       ],
       "services": {
@@ -40,7 +40,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "4483087538-kp1tfbauv01bf06bknjbbmkuas8fumrt.apps.googleusercontent.com",
+              "client_id": "401856446976-nf3t5itv4dps3bu5jm04ruj5nfriec4n.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -52,14 +52,14 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:4483087538:android:ef33aa8c4ac395dc",
+        "mobilesdk_app_id": "1:401856446976:android:ef33aa8c4ac395dc",
         "android_client_info": {
           "package_name": "com.example.zulqarnain.campusrecruitment"
         }
       },
       "oauth_client": [
         {
-          "client_id": "4483087538-iuphoaghime3m6hos4284v7j6eac37tt.apps.googleusercontent.com",
+          "client_id": "401856446976-6ov9k5vbiig010v63v00heoab9lgfrh5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.zulqarnain.campusrecruitment",
@@ -67,13 +67,13 @@
           }
         },
         {
-          "client_id": "4483087538-kp1tfbauv01bf06bknjbbmkuas8fumrt.apps.googleusercontent.com",
+          "client_id": "401856446976-nf3t5itv4dps3bu5jm04ruj5nfriec4n.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAGoGg65gvLULwDWM03hBk6lMpvpYK5HfI"
+          "current_key": "AIzaSyAV1YNGgZhVPealJiQBUbwECOdGL78S2yo"
         }
       ],
       "services": {
@@ -84,7 +84,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "4483087538-kp1tfbauv01bf06bknjbbmkuas8fumrt.apps.googleusercontent.com",
+              "client_id": "401856446976-nf3t5itv4dps3bu5jm04ruj5nfriec4n.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

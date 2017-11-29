@@ -1,4 +1,4 @@
-package com.example.zulqarnain.campusrecruitment.utils;
+package com.example.zulqarnain.campusrecruitment.utilities;
 
 import android.content.Context;
 import android.widget.Toast;

@@ -22,6 +22,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Testting text"
+                android:textAllCaps="true"
+                android:layout_marginBottom="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
 

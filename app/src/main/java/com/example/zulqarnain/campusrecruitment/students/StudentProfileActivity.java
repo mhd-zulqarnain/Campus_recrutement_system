@@ -15,10 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.CompanyJobsAppliedActivity;
 import com.example.zulqarnain.campusrecruitment.models.Student;
 import com.example.zulqarnain.campusrecruitment.ui.activities.LoginActivity;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
+import com.example.zulqarnain.campusrecruitment.utilities.Messege;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -59,25 +58,32 @@ public class StudentProfileActivity extends AppCompatActivity implements TextWat
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                try {
-                    Student std= dataSnapshot.getValue(Student.class);
+
+                Log.d("", "onChildAdded: test" + dataSnapshot);
+                String key = dataSnapshot.getKey();
+                if (key.equals("details")) {
+//                try {
+                    Student std = dataSnapshot.getValue(Student.class);
                     edDepartment.setText(std.getDepartment());
                     edSemister.setText(std.getSemister());
                     isUpdate = false;
-                }catch (Exception e){
-
                 }
+                /*}catch (Exception e){
+
+                }*/
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                try {
-                    Student std= dataSnapshot.getValue(Student.class);
+                String key = dataSnapshot.getKey();
+
+                if (key.equals("details")) {
+                    Student std = dataSnapshot.getValue(Student.class);
                     edDepartment.setText(std.getDepartment());
                     edSemister.setText(std.getSemister());
-                }catch (Exception e){
-
+                    isUpdate = false;
                 }
+
             }
 
             @Override
@@ -103,20 +109,17 @@ public class StudentProfileActivity extends AppCompatActivity implements TextWat
         if (isUpdate) {
             String dpt = edDepartment.getText().toString();
             String semister = edSemister.getText().toString();
-            if (!TextUtils.isEmpty(dpt) && !TextUtils.isEmpty(dpt))
-            {
-                Student student = new Student(semister,dpt);
+            if (!TextUtils.isEmpty(dpt) && !TextUtils.isEmpty(dpt)) {
+                Student student = new Student(semister, dpt);
                 ref.child("details").setValue(student);
-                Messege.messege(StudentProfileActivity.this,"Profile Updated");
+                Messege.messege(StudentProfileActivity.this, "Profile Updated");
 
-            }else
-            {
-                Messege.messege(StudentProfileActivity.this,"All Field should be filled");
+            } else {
+                Messege.messege(StudentProfileActivity.this, "All Field should be filled");
             }
 
-        }
-        else
-            Messege.messege(StudentProfileActivity.this,"Nothing to update");
+        } else
+            Messege.messege(StudentProfileActivity.this, "Nothing to update");
 
     }
 

@@ -7,17 +7,22 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.ui.activities.LoginActivity;
+import com.example.zulqarnain.campusrecruitment.utilities.utils;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class CompanyActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ViewPager mViewPager;
-
+    private String userKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +32,9 @@ public class CompanyActivity extends AppCompatActivity {
         mViewPager= (ViewPager) findViewById(R.id.company_view_pager);
         CompanyPagerAdapter adapter = new CompanyPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
+        userKey= auth.getCurrentUser().getUid();
+
+        Log.d("", "onCreate:admin "+ utils.getuseype());
     }
 
     @Override
@@ -80,4 +88,8 @@ public class CompanyActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

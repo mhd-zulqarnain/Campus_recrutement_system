@@ -9,41 +9,47 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.adapters.DetailAppliedAdapter;
-import com.example.zulqarnain.campusrecruitment.company.adapters.JobAppliedAdapter;
 import com.example.zulqarnain.campusrecruitment.ui.activities.LoginActivity;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class CompanyJobsAppliedActivity extends AppCompatActivity {
 
     private String jobKey;
+    private String jobName;
     private DetailAppliedAdapter detailAppliedAdapter;
     private ArrayList<String> keyList;
     private DatabaseReference ref;
     private FirebaseAuth auth;
+    private TextView jobTitle;
     private  RecyclerView recyclerView ;
     private String TAG = "student.applied.acitivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Applied Student Details");
         setContentView(R.layout.activity_student_applied);
+
+
         recyclerView = (RecyclerView) findViewById(R.id.applied_student_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         jobKey = getIntent().getStringExtra("jobKey");
+        jobName = getIntent().getStringExtra("jobName");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        jobTitle= (TextView) findViewById(R.id.t_applied_job_tile);
+        jobTitle.setText(jobName);
         auth= FirebaseAuth.getInstance();
         ref= FirebaseDatabase.getInstance().getReference("jobs").child(jobKey).child("canidates");
         updateUi();

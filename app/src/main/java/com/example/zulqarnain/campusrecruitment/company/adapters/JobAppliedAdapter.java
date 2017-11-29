@@ -29,6 +29,7 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
     private ArrayList<Jobs> jobList;
     private Context mContext;
     private DatabaseReference ref;
+    private int applicantNumber;
 
     public JobAppliedAdapter(Context context, ArrayList<Jobs> jobList, DatabaseReference ref) {
         this.jobList = jobList;
@@ -61,30 +62,40 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
 
         private TextView tDes;
         private TextView tAppNum;
-       private Jobs mjob;
+        private Jobs mjob;
 
         public ViewJobHolder(View itemView) {
             super(itemView);
-            tDes= itemView.findViewById(R.id.t_com_applied_job_des);
-            tAppNum= itemView.findViewById(R.id.t_com_applied_applicant_num);
+            tDes = itemView.findViewById(R.id.t_com_applied_job_des);
+            tAppNum = itemView.findViewById(R.id.t_com_applied_applicant_num);
             itemView.setEnabled(true);
             itemView.setOnClickListener(this);
         }
 
         public void bindView(Jobs mjob) {
             this.mjob = mjob;
-            tDes.setText("Title:" +mjob.getJobDescription());
+            tDes.setText("Title:" + mjob.getJobDescription());
             getNumberOfApplicants();
 
         }
-        public void getNumberOfApplicants(){
-            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("jobs").child(mjob.getJobKey()).child("canidates");
+
+        public void getNumberOfApplicants() {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("jobs").child(mjob.getJobKey()).child("canidates");
             ref.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                  String num= String.valueOf(dataSnapshot.getChildrenCount());
-                    tAppNum.setText("Number of applicants: "+num);
+                    applicantNumber = (int) dataSnapshot.getChildrenCount();
+                    tAppNum.setText("Number of applicants: " + applicantNumber);
+                    if (applicantNumber > 0) {
+
+                        itemView.setEnabled(true);
+                    } else {
+                        itemView.setEnabled(false);
+                    }
+
                 }
+
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
@@ -95,9 +106,12 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
         @Override
         public void onClick(View view) {
 
-            Intent intent  = new Intent(mContext.getApplicationContext(), CompanyJobsAppliedActivity.class);
-            intent.putExtra("jobKey",mjob.getJobKey());
+
+            Intent intent = new Intent(mContext.getApplicationContext(), CompanyJobsAppliedActivity.class);
+            intent.putExtra("jobKey", mjob.getJobKey());
+            intent.putExtra("jobName", mjob.getJobDescription());
             mContext.startActivity(intent);
+
         }
     }
 }

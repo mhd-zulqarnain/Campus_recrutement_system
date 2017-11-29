@@ -117,7 +117,7 @@ public class CompanyDialogFragment extends DialogFragment {
     public void updateUi() {
         if (dialogDetailType == R.string.company_appplied_ob_dialog) {
             tJobDescription.setText(mJob.getJobDescription());
-            tCompanyName.setText(auth.getCurrentUser().getDisplayName().toString());
+            tCompanyName.setText(auth.getCurrentUser().getDisplayName());
             tJobType.setText("Job type: " + mJob.getJobType());
             tJobVacancy.setText( mJob.getJobVacancy());
 

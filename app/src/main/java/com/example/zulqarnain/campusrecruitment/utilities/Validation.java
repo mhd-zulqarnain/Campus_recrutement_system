@@ -1,4 +1,4 @@
-package com.example.zulqarnain.campusrecruitment.utils;
+package com.example.zulqarnain.campusrecruitment.utilities;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

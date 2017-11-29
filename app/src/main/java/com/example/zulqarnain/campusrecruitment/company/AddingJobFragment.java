@@ -14,7 +14,7 @@ import android.widget.Spinner;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.models.Jobs;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
+import com.example.zulqarnain.campusrecruitment.utilities.Messege;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;

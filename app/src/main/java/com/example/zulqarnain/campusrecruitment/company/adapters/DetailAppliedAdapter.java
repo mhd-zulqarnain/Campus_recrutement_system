@@ -1,6 +1,10 @@
 package com.example.zulqarnain.campusrecruitment.company.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
+import com.example.zulqarnain.campusrecruitment.company.StudentDetailDialogFragment;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,25 +57,22 @@ public class DetailAppliedAdapter extends RecyclerView.Adapter<DetailAppliedAdap
         return stuList.size();
     }
 
-    public class ViewJobHolder extends RecyclerView.ViewHolder {
+    public class ViewJobHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView stdName;
+        private String argName;
         private Button bDetail;
         private String stuKey;
-
         public ViewJobHolder(View itemView) {
             super(itemView);
             stdName = itemView.findViewById(R.id.applied_stud_name);
             bDetail = itemView.findViewById(R.id.appplied_btn_detail);
+            bDetail.setOnClickListener(this);
         }
 
         public void bindView(String stuKey) {
             this.stuKey = stuKey;
             setStdName();
-            Log.d("test", "bindView:keyss " + stuKey);
-//            t.setText("Title:" +mjob.getJobDescription());
-
-
         }
 
         public void setStdName() {
@@ -79,9 +81,13 @@ public class DetailAppliedAdapter extends RecyclerView.Adapter<DetailAppliedAdap
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        String name = snap.getValue(String.class);
-                            if (dataSnapshot.getKey().equals(stuKey))
-                            stdName.setText(name);
+                        if (snap.getKey().equals("name")) {
+                            String name = snap.getValue(String.class);
+                            if (dataSnapshot.getKey().equals(stuKey)) {
+                                argName = name;
+                                stdName.setText(name);
+                            }
+                        }
                     }
 
                 }
@@ -89,21 +95,26 @@ public class DetailAppliedAdapter extends RecyclerView.Adapter<DetailAppliedAdap
                 @Override
                 public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                     for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        String name = snap.getValue(String.class);
-                        if (dataSnapshot.getKey().equals(stuKey))
-                            stdName.setText(name);
+                        if (snap.getKey().equals("name")) {
+                            String name = snap.getValue(String.class);
+                            if (dataSnapshot.getKey().equals(stuKey)) {
+                                stdName.setText(name);
+                                argName=name;
+                            }
+                        }
                     }
                 }
 
                 @Override
                 public void onChildRemoved(DataSnapshot dataSnapshot) {
                     for (DataSnapshot snap : dataSnapshot.getChildren()) {
-                        String name = snap.getValue(String.class);
+                        if (snap.getKey().equals("name")) {
                             int index = getIndex(dataSnapshot.getKey());
                             if (index != -1) {
                                 stuList.remove(index);
                                 notifyDataSetChanged();
                             }
+                        }
                     }
 
 
@@ -128,6 +139,12 @@ public class DetailAppliedAdapter extends RecyclerView.Adapter<DetailAppliedAdap
                 }
             }
             return -1;
+        }
+
+        @Override
+        public void onClick(View view) {
+            DialogFragment dialog = StudentDetailDialogFragment.newInstance(stuKey.toString(), argName);
+            dialog.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "mydialog");
         }
     }
 }

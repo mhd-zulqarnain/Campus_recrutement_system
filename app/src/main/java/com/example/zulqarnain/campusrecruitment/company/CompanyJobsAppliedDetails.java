@@ -32,7 +32,6 @@ public class CompanyJobsAppliedDetails extends Fragment {
     private ArrayList<Jobs> jobs;
     private final String TAG = "test";
     String comkey;
-
     JobAppliedAdapter adapter;
 
     @Nullable
