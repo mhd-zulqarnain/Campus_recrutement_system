@@ -1,4 +1,4 @@
-package com.example.zulqarnain.campusrecruitment.admin;
+package com.example.zulqarnain.campusrecruitment.admin.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

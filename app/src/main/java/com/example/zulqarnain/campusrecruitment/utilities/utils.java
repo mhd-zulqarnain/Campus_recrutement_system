@@ -18,6 +18,7 @@ import java.util.HashMap;
  */
 
 public class utils {
+
     public static FirebaseAuth auth = FirebaseAuth.getInstance();
     private static  String usertype=null;
     public static String getDeviceName(){

@@ -25,6 +25,8 @@
         <activity android:name=".ui.activities.SignUpActivity" />
         <activity android:name=".students.StudentActivity" />
         <activity android:name=".company.CompanyActivity" />
+        <activity android:name=".admin.AdminActivity"/>
+
         <activity android:name=".company.CompanyJobsAppliedActivity" />
         <activity android:name=".students.StudentProfileActivity"/>
         <service

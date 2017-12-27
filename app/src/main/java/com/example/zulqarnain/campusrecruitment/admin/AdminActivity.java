@@ -35,12 +35,21 @@ public class AdminActivity extends AppCompatActivity{
 
         @Override
         public Fragment getItem(int position) {
-            return null;
+
+            switch (position)
+            {
+                case 0:
+                    return  new StudentListFragment();
+                case 1:
+                    return new CompanyListFragement();
+                default:
+                    return null;
+            }
         }
 
         @Override
         public int getCount() {
-            return 0;
+            return 2;
         }
 
         @Override

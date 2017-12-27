@@ -22,9 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-/**
- * Created by Zul Qarnain on 11/6/2017.
- */
 
 public class CompanyDashboardFragment extends Fragment {
     private DatabaseReference ref;

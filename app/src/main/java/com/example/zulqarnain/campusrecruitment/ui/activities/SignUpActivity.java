@@ -141,11 +141,16 @@ public class SignUpActivity extends AppCompatActivity {
             Intent intent = new  Intent(SignUpActivity.this, StudentActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent );
+            finish();
 
         } else if (uType.equals("Company")) {
             user.put("name", name);
             mDatabase.child("company").child(mKey).setValue(user);
-            startActivity(new Intent(SignUpActivity.this, CompanyActivity.class));
+            Intent intent = new Intent(SignUpActivity.this, CompanyActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+
         }
     }
 

@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.example.zulqarnain.campusrecruitment.R;
+import com.example.zulqarnain.campusrecruitment.admin.AdminActivity;
 import com.example.zulqarnain.campusrecruitment.company.CompanyActivity;
 import com.example.zulqarnain.campusrecruitment.students.StudentActivity;
 import com.example.zulqarnain.campusrecruitment.utilities.Messege;
@@ -119,15 +120,24 @@ public class LoginActivity extends AppCompatActivity {
                 String type = dataSnapshot.child("type").getValue().toString();
 
                 if (type.equals("Student")) {
-                    startActivity(new Intent(LoginActivity.this, StudentActivity.class));
+                    Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     finish();
 
 
                 } else if (type.equals("Company")) {
-                    startActivity(new Intent(LoginActivity.this, CompanyActivity.class));
-
+                    Intent intent = new Intent(LoginActivity.this, CompanyActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                     finish();
 
+                }
+                else if(type.equals("Admin")){
+                    Intent intent= new Intent(LoginActivity.this, AdminActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
                 }
             }
 

@@ -24,7 +24,7 @@ import com.google.firebase.messaging.RemoteMessage;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
+        String type=null;
         // Check if message contains a data payload.
             if (remoteMessage.getData().size() > 0) {
                 showNotification(remoteMessage.getData().get("type"), remoteMessage.getData().get("vacancy"));
