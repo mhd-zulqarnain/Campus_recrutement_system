@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:weightSum="1">
+
+    <ProgressBar
+        android:id="@+id/pic_upload_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        >
+
+        <ImageView
+            android:id="@+id/prf_pic"
+            android:layout_width="100dp"
+            android:layout_height="120dp"
+            android:padding="0dp"
+            android:layout_margin="0dp"
+            android:src="@drawable/no_img" />
+        <Button
+            android:id="@+id/btn_add_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="add image"
+            android:onClick="addImage"
+            android:layout_gravity="center"
+
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Student name"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/profile_student_name"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+
+            />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+
+                android:id="@+id/profile_student_semister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Semister" />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            >
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Department"
+                android:id="@+id/profile_student_department"
+
+                />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+</LinearLayout>
+
+
+
+<Button
+    android:onClick="updateProfile"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Save" />
+</LinearLayout>

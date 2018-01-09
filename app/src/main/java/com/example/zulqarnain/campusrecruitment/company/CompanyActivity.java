@@ -7,20 +7,22 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.students.*;
-import com.example.zulqarnain.campusrecruitment.students.ProfileFragment;
 import com.example.zulqarnain.campusrecruitment.ui.activities.LoginActivity;
+import com.example.zulqarnain.campusrecruitment.utilities.utils;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class CompanyActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private ViewPager mViewPager;
-
+    private String userKey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +32,15 @@ public class CompanyActivity extends AppCompatActivity {
         mViewPager= (ViewPager) findViewById(R.id.company_view_pager);
         CompanyPagerAdapter adapter = new CompanyPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
+        userKey= auth.getCurrentUser().getUid();
+
+        Log.d("", "onCreate:admin "+ utils.getuseype());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
+        menuInflater.inflate(R.menu.company_menu, menu);
         return true;
     }
 
@@ -63,20 +68,28 @@ public class CompanyActivity extends AppCompatActivity {
             }
             else if(position==1){
                 return new AddingJobFragment();
+            }else if(position==2){
+                return new CompanyJobsAppliedDetails();
             }
             return null;
         }
         public CharSequence getPageTitle(int position) {
             if(position==0)
                 return "Company dashboard";
-            else
+            else if(position==1)
                 return "Job Portal";
+            else
+                return "Applied ";
 
         }
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 }

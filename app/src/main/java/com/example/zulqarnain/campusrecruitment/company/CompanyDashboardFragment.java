@@ -9,9 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import com.example.zulqarnain.campusrecruitment.R;
+import com.example.zulqarnain.campusrecruitment.company.adapters.JobAdapter;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -21,17 +22,17 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-/**
- * Created by Zul Qarnain on 11/6/2017.
- */
 
 public class CompanyDashboardFragment extends Fragment {
     private DatabaseReference ref;
     private FirebaseAuth auth;
     private RecyclerView rJoblist;
     private ArrayList<Jobs> jobs;
-    private final String TAG="test";
+    private final String TAG = "test";
+    String comkey;
+
     JobAdapter adapter;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,13 +46,14 @@ public class CompanyDashboardFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
-        String key = auth.getCurrentUser().getUid();
-        ref = FirebaseDatabase.getInstance().getReference("company").child(key).child("jobs");
+        comkey = auth.getCurrentUser().getUid();
+
+        ref = FirebaseDatabase.getInstance().getReference("jobs");
     }
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAdapter(getContext(), jobs,ref);
+        adapter = new JobAdapter(getContext(), jobs, ref);
         rJoblist.setLayoutManager(new LinearLayoutManager(getContext()));
         rJoblist.setAdapter(adapter);
 
@@ -59,23 +61,30 @@ public class CompanyDashboardFragment extends Fragment {
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Jobs job= dataSnapshot.getValue(Jobs.class);
-                Log.d(TAG, "onChildAdded: "+job.getJobDescription());
-                jobs.add(job);
-                adapter.notifyDataSetChanged();
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
+                if (job.getCompanyKey().equals(comkey)) {
+                    jobs.add(job);
+                    adapter.notifyDataSetChanged();
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
+                int index = getIndexOf(job.getJobKey());
+                jobs.set(index,job);
+                adapter.notifyItemChanged(index);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Jobs job= dataSnapshot.getValue(Jobs.class);
+                DataSnapshot snapshot = dataSnapshot.child("details");
+                Jobs job = snapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
                 jobs.remove(index);
-                adapter.notifyItemChanged(index);
+                adapter.notifyDataSetChanged();
 
             }
 
@@ -91,10 +100,10 @@ public class CompanyDashboardFragment extends Fragment {
         });
     }
 
-    public int getIndexOf(String key){
-        for(int i=0;i<jobs.size();i++){
-            Jobs mj= jobs.get(i);
-            if(mj.getJobKey().equals(key)){
+    public int getIndexOf(String key) {
+        for (int i = 0; i < jobs.size(); i++) {
+            Jobs mj = jobs.get(i);
+            if (mj.getJobKey().equals(key)) {
                 return jobs.indexOf(mj);
             }
         }

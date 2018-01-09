@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Company Name"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:typeface="monospace"
+        android:textSize="20sp"
+        android:id="@+id/d_company_name"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="There you have it: Parcelable is more than 10x faster than Serializable! It is also interesting to note that even on a Nexus 10, a pretty simple object can take about 1 millisecond to g"
+        android:layout_margin="20dp"
+        android:typeface="monospace"
+        android:id="@+id/d_job_description"
+
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/d_job_type"
+
+        android:layout_marginLeft="20dp"
+        android:text="Job type: Business"
+        android:typeface="normal"
+
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/d_job_vacancy"
+        android:layout_marginLeft="20dp"
+        android:text="Vacancy: 3"
+        android:typeface="normal"
+        />
+
+
+</LinearLayout>

@@ -7,14 +7,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
+import com.example.zulqarnain.campusrecruitment.models.Jobs;
+import com.example.zulqarnain.campusrecruitment.utilities.Messege;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -48,8 +48,7 @@ public class AddingJobFragment extends Fragment implements View.OnClickListener 
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
-        String key=auth.getCurrentUser().getUid();
-        mDatabase = FirebaseDatabase.getInstance().getReference("company").child(key);
+        mDatabase = FirebaseDatabase.getInstance().getReference("jobs");
     }
 
 
@@ -75,10 +74,10 @@ public class AddingJobFragment extends Fragment implements View.OnClickListener 
             Messege.messege(getContext(),"Enter number of vacancy");
             return;
         }
-
+        String comkey=auth.getCurrentUser().getUid();
         String key=mDatabase.push().getKey();
-        Jobs job = new Jobs(jType,key,jDes,jVac);
-        mDatabase.child("jobs").child(key).setValue(job);
+        Jobs job = new Jobs(jType,key,jDes,jVac,comkey);
+        mDatabase.child(key).child("details").setValue(job);
 
         jDescription.setText("");
         jVacancy.setText("");

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/row_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txt_name"
+                style="@style/myFontStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Testting text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+
+            <TextView
+                android:id="@+id/txt_detail"
+                style="@style/myFontStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_name"
+                android:text="Testting text"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <Button
+                android:id="@+id/btn_dlt"
+                style="@style/ButtontStyle"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="#e45454"
+                android:text="Delete" />
+
+            <Button
+                android:id="@+id/com_btn_detail"
+                style="@style/ButtontStyle"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/btn_dlt"
+                android:layout_alignTop="@+id/btn_dlt"
+                android:layout_marginEnd="18dp"
+                android:layout_marginRight="18dp"
+                android:layout_toLeftOf="@+id/btn_dlt"
+                android:layout_toStartOf="@+id/btn_dlt"
+                android:background="#a38e8e"
+                android:text="Detail"
+
+                />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

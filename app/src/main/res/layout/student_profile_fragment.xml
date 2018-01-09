@@ -1,51 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
-    <android.support.design.widget.TextInputLayout
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/student_prf_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter your name" />
-
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/student_prf_Dept"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter your Department" />
-
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <EditText
-            android:id="@+id/student_prf_yos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter year of study" />
-    </android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/prf_upd_btn"
-        android:text="Update"
-        />
+        android:layout_height="match_parent"
+        android:id="@+id/std_recycler_dash"/>
 </LinearLayout>

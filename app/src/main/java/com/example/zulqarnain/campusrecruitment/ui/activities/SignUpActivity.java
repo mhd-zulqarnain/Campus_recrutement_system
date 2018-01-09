@@ -17,8 +17,9 @@ import android.widget.Spinner;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.CompanyActivity;
 import com.example.zulqarnain.campusrecruitment.students.StudentActivity;
-import com.example.zulqarnain.campusrecruitment.utils.Messege;
-import com.example.zulqarnain.campusrecruitment.utils.Validation;
+import com.example.zulqarnain.campusrecruitment.utilities.Messege;
+import com.example.zulqarnain.campusrecruitment.utilities.Validation;
+import com.example.zulqarnain.campusrecruitment.utilities.utils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.HashMap;
 
@@ -104,13 +106,19 @@ public class SignUpActivity extends AppCompatActivity {
                             HashMap<String, String> user = new HashMap<String, String>();
                             user.put("uid", mKey);
                             user.put("type", uType);
-
+                            user.put("disabled","false");
                             mDatabase.child(mKey).setValue(user);
                             //inserting name
                             UserProfileChangeRequest profileName = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(name).build();
                             auth.getCurrentUser().updateProfile(profileName);
                             Messege.messege(getBaseContext(), "Successfully signed up");
+
+                            //----storing access token------
+                                String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+                                utils.updateFcm(refreshedToken);
+                            //------------------------------
+
                             updataUi(profileName.getDisplayName());
 
                         } else {
@@ -126,15 +134,26 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void updataUi(String name) {
         HashMap<String, String> user = new HashMap<String, String>();
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         if (uType.equals("Student")) {
-            user.put("name",name);
+            user.put("name", name);
+            user.put("uid", auth.getCurrentUser().getUid());
             mDatabase.child("student").child(mKey).setValue(user);
-            startActivity(new Intent(SignUpActivity.this, StudentActivity.class));
+            Intent intent = new  Intent(SignUpActivity.this, StudentActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent );
+            finish();
+
         } else if (uType.equals("Company")) {
-            user.put("name",name);
+            user.put("name", name);
+            user.put("uid", auth.getCurrentUser().getUid());
             mDatabase.child("company").child(mKey).setValue(user);
-            startActivity(new Intent(SignUpActivity.this, CompanyActivity.class));
+            Intent intent = new Intent(SignUpActivity.this, CompanyActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
+
         }
     }
 
