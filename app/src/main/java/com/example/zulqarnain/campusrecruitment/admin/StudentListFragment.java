@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.admin.adapter.StudentListAdapter;
+import com.example.zulqarnain.campusrecruitment.models.StudDetail;
 import com.example.zulqarnain.campusrecruitment.models.Student;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,9 +30,10 @@ import java.util.ArrayList;
 public class StudentListFragment extends Fragment {
     private RecyclerView recyclerView;
     private DatabaseReference ref;
-    private ArrayList<Student> stuList;
-    private String TAG="com.studentList.fragment";
+    private ArrayList<StudDetail> stuList;
 
+    private String TAG="com.studentList.fragment";
+    StudentListAdapter adapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         ref = FirebaseDatabase.getInstance().getReference("student");
@@ -42,28 +45,41 @@ public class StudentListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.admin_student_fragment_view,container,false);
         recyclerView  =v.findViewById(R.id.admin_recycler_student_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL));
         updateView();
         return  v;
     }
     public void updateView(){
         stuList = new ArrayList<>();
-        StudentListAdapter adapter = new StudentListAdapter(getContext(),stuList);
-
+        adapter = new StudentListAdapter(getContext(),stuList);
+        recyclerView.setAdapter(adapter);
         ref.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded student: "+dataSnapshot);
+                StudDetail detail=dataSnapshot.getValue(StudDetail.class);
+                stuList.add(detail);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                StudDetail detail=dataSnapshot.getValue(StudDetail.class);
+                int index=getStu(detail.getUid());
+                if(index!=-1){
+                    stuList.set(index,detail);
+                    adapter.notifyItemChanged(index);
+                }
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                StudDetail detail=dataSnapshot.getValue(StudDetail.class);
+                int index=getStu(detail.getUid());
+                if(index!=-1){
+                    stuList.remove(index);
+                    adapter.notifyItemRemoved(index);
+                }
             }
 
             @Override
@@ -79,4 +95,12 @@ public class StudentListFragment extends Fragment {
 
     }
 
+
+    public int getStu(String uid){
+        for (int i=0;i<stuList.size();i++){
+            if(stuList.get(i).getUid().equals(uid))
+                return i;
+        }
+        return -1;
+    }
 }

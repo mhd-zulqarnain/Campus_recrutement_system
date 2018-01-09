@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void updataUi() {
-       //----storing access token------
+        //----storing access token------
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         utils.updateFcm(refreshedToken);
         //------------------------------
@@ -118,26 +118,32 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String type = dataSnapshot.child("type").getValue().toString();
+                String disabled = dataSnapshot.child("disabled").getValue().toString();
+                Log.d(TAG, "onDataChange: disabled "+disabled+" type "+type);
+                if (disabled.equals("false")) {
+                    if (type.equals("Student")) {
+                        Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
 
-                if (type.equals("Student")) {
-                    Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
 
+                    } else if (type.equals("Company")) {
+                        Intent intent = new Intent(LoginActivity.this, CompanyActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
 
-                } else if (type.equals("Company")) {
-                    Intent intent = new Intent(LoginActivity.this, CompanyActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
-
-                }
-                else if(type.equals("Admin")){
-                    Intent intent= new Intent(LoginActivity.this, AdminActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
+                    } else if (type.equals("Admin")) {
+                        Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        finish();
+                    }
+                } else if (disabled.equals("false")){
+                    auth.signOut();
+                    Messege.messege(getBaseContext(),"Account has been disabled");
+                    barProgress.setVisibility(View.GONE);
                 }
             }
 

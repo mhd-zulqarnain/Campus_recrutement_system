@@ -106,7 +106,7 @@ public class SignUpActivity extends AppCompatActivity {
                             HashMap<String, String> user = new HashMap<String, String>();
                             user.put("uid", mKey);
                             user.put("type", uType);
-
+                            user.put("disabled","false");
                             mDatabase.child(mKey).setValue(user);
                             //inserting name
                             UserProfileChangeRequest profileName = new UserProfileChangeRequest.Builder()
@@ -134,9 +134,11 @@ public class SignUpActivity extends AppCompatActivity {
 
     public void updataUi(String name) {
         HashMap<String, String> user = new HashMap<String, String>();
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         if (uType.equals("Student")) {
             user.put("name", name);
+            user.put("uid", auth.getCurrentUser().getUid());
             mDatabase.child("student").child(mKey).setValue(user);
             Intent intent = new  Intent(SignUpActivity.this, StudentActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -145,6 +147,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         } else if (uType.equals("Company")) {
             user.put("name", name);
+            user.put("uid", auth.getCurrentUser().getUid());
             mDatabase.child("company").child(mKey).setValue(user);
             Intent intent = new Intent(SignUpActivity.this, CompanyActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
