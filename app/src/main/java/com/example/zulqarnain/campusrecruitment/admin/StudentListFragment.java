@@ -94,8 +94,6 @@ public class StudentListFragment extends Fragment {
         });
 
     }
-
-
     public int getStu(String uid){
         for (int i=0;i<stuList.size();i++){
             if(stuList.get(i).getUid().equals(uid))
