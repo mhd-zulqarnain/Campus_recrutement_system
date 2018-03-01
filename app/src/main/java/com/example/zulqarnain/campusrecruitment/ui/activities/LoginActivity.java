@@ -37,8 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.security.Permission;
-
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -140,7 +138,7 @@ public class LoginActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     }
-                } else if (disabled.equals("false")){
+                } else if (disabled.equals("true")){
                     auth.signOut();
                     Messege.messege(getBaseContext(),"Account has been disabled");
                     barProgress.setVisibility(View.GONE);

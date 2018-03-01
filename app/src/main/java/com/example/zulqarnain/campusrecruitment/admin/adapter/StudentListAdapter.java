@@ -100,7 +100,6 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
                                 ref = FirebaseDatabase.getInstance().getReference("student");
                                 ref.child(uid).removeValue();
                                 ref = FirebaseDatabase.getInstance().getReference("users");
