@@ -37,7 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
