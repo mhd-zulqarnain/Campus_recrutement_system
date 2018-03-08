@@ -91,8 +91,12 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
 
             }
             else if(view.getId()==R.id.com_btn_applied){
-                DialogFragment dialogFragment = CompanyDialogFragment.newInstance(R.string.company_appplied_ob_dialog,mjob);
-                dialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "applied");
+                try {
+                    DialogFragment dialogFragment = CompanyDialogFragment.newInstance(R.string.company_appplied_ob_dialog,mjob);
+                    dialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "mydialog");
+                }catch (Exception e){
+                    Log.d("", "onClick: "+e);
+                }
 
             }
 
