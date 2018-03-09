@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.adapters.JobAdapter;
@@ -30,7 +31,7 @@ public class CompanyDashboardFragment extends Fragment {
     private ArrayList<Jobs> jobs;
     private final String TAG = "test";
     String comkey;
-
+    private TextView noData ;
     JobAdapter adapter;
 
     @Nullable
@@ -38,6 +39,7 @@ public class CompanyDashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.company_dashboard_fragment, container, false);
         rJoblist = v.findViewById(R.id.job_list_view);
+        noData = v.findViewById(R.id.no_data_view);
         updateUi();
         return v;
     }
@@ -53,7 +55,7 @@ public class CompanyDashboardFragment extends Fragment {
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAdapter(getContext(), jobs, ref);
+        adapter = new JobAdapter(getContext(), jobs, ref, noData);
         rJoblist.setLayoutManager(new LinearLayoutManager(getContext()));
         rJoblist.setAdapter(adapter);
 
@@ -74,7 +76,7 @@ public class CompanyDashboardFragment extends Fragment {
                 DataSnapshot snapshot = dataSnapshot.child("details");
                 Jobs job = snapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
-                jobs.set(index,job);
+                jobs.set(index, job);
                 adapter.notifyItemChanged(index);
             }
 
@@ -83,8 +85,10 @@ public class CompanyDashboardFragment extends Fragment {
                 DataSnapshot snapshot = dataSnapshot.child("details");
                 Jobs job = snapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
-                jobs.remove(index);
-                adapter.notifyDataSetChanged();
+                if (index != -1) {
+                    jobs.remove(index);
+                    adapter.notifyCustomDataRemove(index);
+                }
 
             }
 
@@ -107,6 +111,6 @@ public class CompanyDashboardFragment extends Fragment {
                 return jobs.indexOf(mj);
             }
         }
-        return 0;
+        return -1;
     }
 }

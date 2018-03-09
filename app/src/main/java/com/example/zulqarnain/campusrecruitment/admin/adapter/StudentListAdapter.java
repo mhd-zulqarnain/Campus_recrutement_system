@@ -35,10 +35,11 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     private ArrayList<StudDetail> stdList;
     private Context ctx;
     private DatabaseReference ref;
-
-    public StudentListAdapter(Context ctx, ArrayList<StudDetail> stdList) {
+    TextView noData;
+    public StudentListAdapter(Context ctx, ArrayList<StudDetail> stdList, TextView noData) {
         this.ctx = ctx;
         this.stdList = stdList;
+        this.noData=noData;
     }
 
     @Override
@@ -53,6 +54,23 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     public void onBindViewHolder(StudentListAdapter.StuViewHolder holder, int position) {
         StudDetail detail = stdList.get(position);
         holder.bindView(detail);
+        if(stdList.size()==0){
+            noData.setVisibility(View.VISIBLE);
+        }
+        else
+            noData.setVisibility(View.GONE);
+
+    }
+
+    public void notifyCustomDataRemove(int index)
+    {
+        notifyItemRemoved(index);
+        super.notifyDataSetChanged();
+        if(stdList.size()==0){
+            noData.setVisibility(View.VISIBLE);
+        }
+        else
+            noData.setVisibility(View.GONE);
     }
 
     @Override

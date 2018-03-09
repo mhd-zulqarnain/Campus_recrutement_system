@@ -6,16 +6,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.adapters.JobAdapter;
 import com.example.zulqarnain.campusrecruitment.models.Jobs;
-import com.example.zulqarnain.campusrecruitment.utilities.Messege;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.zulqarnain.campusrecruitment.models.ServiceError;
+import com.example.zulqarnain.campusrecruitment.models.ServiceListener;
+import com.example.zulqarnain.campusrecruitment.utilities.utils;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class CompanyDetailActivity extends AppCompatActivity {
+public class CompanyAdminDetailActivity extends AppCompatActivity {
 
 
     private DatabaseReference ref;
@@ -41,12 +38,13 @@ public class CompanyDetailActivity extends AppCompatActivity {
         comkey = getIntent().getStringExtra("uid");
         rJoblist = (RecyclerView) findViewById(R.id.job_list_view);
         ref = FirebaseDatabase.getInstance().getReference("jobs");
+
         updateUi();
     }
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAdapter(getBaseContext(), jobs, ref);
+        //adapter = new JobAdapter(getBaseContext(), jobs, ref, noData);
         rJoblist.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         rJoblist.setAdapter(adapter);
 
@@ -93,6 +91,17 @@ public class CompanyDetailActivity extends AppCompatActivity {
 
             }
         });
+        utils.getCompanyName(comkey, new ServiceListener() {
+            @Override
+            public void success(Object obj) {
+                setTitle("Job offerd by "+obj.toString());
+            }
+
+            @Override
+            public void error(ServiceError serviceError) {
+
+            }
+        });
     }
 
     public int getIndexOf(String key) {
@@ -104,5 +113,7 @@ public class CompanyDetailActivity extends AppCompatActivity {
         }
         return -1;
     }
+
+
 
 }

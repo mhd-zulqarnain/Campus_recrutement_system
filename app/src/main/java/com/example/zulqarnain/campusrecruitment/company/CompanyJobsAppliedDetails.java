@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.adapters.JobAppliedAdapter;
@@ -33,12 +34,14 @@ public class CompanyJobsAppliedDetails extends Fragment {
     private final String TAG = "test";
     String comkey;
     JobAppliedAdapter adapter;
+    private TextView noData;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.company_jobs_applied_layout, container, false);
         rJoblist = v.findViewById(R.id.com_job_applied_recycler);
+        noData = v.findViewById(R.id.no_data_view);
         updateUi();
         return v;
     }
@@ -54,7 +57,7 @@ public class CompanyJobsAppliedDetails extends Fragment {
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAppliedAdapter(getContext(), jobs, ref);
+        adapter = new JobAppliedAdapter(getContext(), jobs, ref, noData);
         rJoblist.setLayoutManager(new LinearLayoutManager(getContext()));
         rJoblist.setAdapter(adapter);
 
@@ -74,7 +77,7 @@ public class CompanyJobsAppliedDetails extends Fragment {
                 DataSnapshot snapshot = dataSnapshot.child("details");
                 Jobs job = snapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
-                jobs.set(index,job);
+                jobs.set(index, job);
                 adapter.notifyItemChanged(index);
             }
 
@@ -83,8 +86,10 @@ public class CompanyJobsAppliedDetails extends Fragment {
                 DataSnapshot snapshot = dataSnapshot.child("details");
                 Jobs job = snapshot.getValue(Jobs.class);
                 int index = getIndexOf(job.getJobKey());
-                jobs.remove(index);
-                adapter.notifyDataSetChanged();
+                if (index != -1) {
+                    jobs.remove(index);
+                    adapter.notifyCustomDataRemove(index);
+                }
 
             }
 
@@ -107,6 +112,6 @@ public class CompanyJobsAppliedDetails extends Fragment {
                 return jobs.indexOf(mj);
             }
         }
-        return 0;
+        return -1;
     }
 }

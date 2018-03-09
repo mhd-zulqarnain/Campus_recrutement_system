@@ -9,4 +9,12 @@
         android:id="@+id/admin_recycler_student_view">
 
     </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No Student added"
+        android:visibility="gone"
+        android:id="@+id/no_data_view"
+        />
 </LinearLayout>

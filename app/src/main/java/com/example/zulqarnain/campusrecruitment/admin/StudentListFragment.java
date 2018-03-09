@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.admin.adapter.StudentListAdapter;
@@ -31,7 +32,7 @@ public class StudentListFragment extends Fragment {
     private RecyclerView recyclerView;
     private DatabaseReference ref;
     private ArrayList<StudDetail> stuList;
-
+    private TextView noData;
     private String TAG="com.studentList.fragment";
     StudentListAdapter adapter;
     @Override
@@ -45,13 +46,17 @@ public class StudentListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.admin_student_fragment_view,container,false);
         recyclerView  =v.findViewById(R.id.admin_recycler_student_view);
+        noData  =v.findViewById(R.id.no_data_view);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2,LinearLayoutManager.VERTICAL));
         updateView();
+        if(stuList.size()==0){
+            noData.setVisibility(View.VISIBLE);
+        }
         return  v;
     }
     public void updateView(){
         stuList = new ArrayList<>();
-        adapter = new StudentListAdapter(getContext(),stuList);
+        adapter = new StudentListAdapter(getContext(),stuList,noData);
         recyclerView.setAdapter(adapter);
         ref.addChildEventListener(new ChildEventListener() {
             @Override
@@ -78,7 +83,7 @@ public class StudentListFragment extends Fragment {
                 int index=getStu(detail.getUid());
                 if(index!=-1){
                     stuList.remove(index);
-                    adapter.notifyItemRemoved(index);
+                    adapter.notifyCustomDataRemove(index);
                 }
             }
 

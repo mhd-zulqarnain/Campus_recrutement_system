@@ -93,6 +93,7 @@ public class utils {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 comName = (String) dataSnapshot.getValue();
+                if(!comName.equals(null))
                 listener.success(comName);
             }
 

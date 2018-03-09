@@ -41,7 +41,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".admin.CompanyDetailActivity"></activity>
+        <activity android:name=".admin.CompanyAdminDetailActivity"></activity>
     </application>
 
 </manifest>

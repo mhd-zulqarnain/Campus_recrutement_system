@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.zulqarnain.campusrecruitment.admin.CompanyDetailActivity;
+import com.example.zulqarnain.campusrecruitment.admin.CompanyAdminDetailActivity;
 import com.example.zulqarnain.campusrecruitment.models.Company;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.ComViewH
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(ctx, CompanyDetailActivity.class);
+                    Intent intent = new Intent(ctx, CompanyAdminDetailActivity.class);
                     intent.putExtra("uid",data.get(getAdapterPosition()).getUid());
                     ctx.startActivity(intent);
                 }

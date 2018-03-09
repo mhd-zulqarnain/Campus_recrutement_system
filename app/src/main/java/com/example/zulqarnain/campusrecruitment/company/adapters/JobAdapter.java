@@ -27,11 +27,13 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
     private ArrayList<Jobs> jobList;
     private Context mContext;
     private DatabaseReference ref;
+    TextView noData;
 
-    public JobAdapter(Context context, ArrayList<Jobs> jobList, DatabaseReference ref) {
+    public JobAdapter(Context context, ArrayList<Jobs> jobList, DatabaseReference ref, TextView noData) {
         this.jobList = jobList;
         this.mContext = context;
         this.ref = ref;
+        this.noData=noData;
     }
 
     @Override
@@ -48,8 +50,23 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
 
         Jobs jobs = jobList.get(position);
         holder.bindView(jobs);
+        if(jobList.size()==0){
+            noData.setVisibility(View.VISIBLE);
+        }
+        else
+            noData.setVisibility(View.GONE);
     }
+    public void notifyCustomDataRemove(int index)
+    {
 
+        super.notifyDataSetChanged();
+        if(jobList.size()==0){
+            noData.setVisibility(View.VISIBLE);
+        }
+        else
+            noData.setVisibility(View.GONE);
+        notifyItemRemoved(index);
+    }
     @Override
     public int getItemCount() {
         return jobList.size();
