@@ -69,8 +69,11 @@ public class CompanyAdapter extends RecyclerView.Adapter<CompanyAdapter.ComViewH
                 @Override
                 public void onClick(View view) {
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                    /*ref.child("company").child(company.getUid()).removeValue();
-                    ref.child("jobs").child(company.getUid()).removeValue();*/
+                    String userKey= company.getUid();
+                    ref.child("company").child(userKey).removeValue();
+                    ref.child("jobs").child(userKey).removeValue();
+                    ref = FirebaseDatabase.getInstance().getReference("users");
+                    ref.child(userKey).child("disabled").setValue("true");
 
 
                 }
