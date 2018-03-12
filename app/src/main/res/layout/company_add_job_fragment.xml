@@ -33,7 +33,8 @@
             android:id="@+id/ed_job_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter job Description" />
+            android:hint="Enter job Description"
+            android:inputType="text" />
 
 
     </android.support.design.widget.TextInputLayout>
@@ -48,13 +49,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Add number of vacancy"
-            android:inputType="number"/>
+            android:inputType="number"
+            android:maxLength="2" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/com_add_job_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add"
-        android:onClick="addJob"/>
+        android:onClick="addJob"
+        android:text="Add" />
 </LinearLayout>

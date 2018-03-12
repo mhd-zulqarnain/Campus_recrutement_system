@@ -3,6 +3,7 @@ package com.example.zulqarnain.campusrecruitment.company.adapters;
 import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,11 +28,16 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
     private ArrayList<Jobs> jobList;
     private Context mContext;
     private DatabaseReference ref;
+    TextView noData;
+    private String flag;
 
-    public JobAdapter(Context context, ArrayList<Jobs> jobList, DatabaseReference ref) {
+
+    public JobAdapter(Context context, ArrayList<Jobs> jobList, DatabaseReference ref, TextView noData, String adapterFlag) {
         this.jobList = jobList;
         this.mContext = context;
         this.ref = ref;
+        this.noData = noData;
+        this.flag = adapterFlag;
     }
 
     @Override
@@ -48,6 +54,20 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
 
         Jobs jobs = jobList.get(position);
         holder.bindView(jobs);
+        if (jobList.size() == 0) {
+            noData.setVisibility(View.VISIBLE);
+        } else
+            noData.setVisibility(View.GONE);
+    }
+
+    public void notifyCustomDataRemove(int index) {
+
+        super.notifyDataSetChanged();
+        if (jobList.size() == 0) {
+            noData.setVisibility(View.VISIBLE);
+        } else
+            noData.setVisibility(View.GONE);
+        notifyItemRemoved(index);
     }
 
     @Override
@@ -70,7 +90,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
             ds = itemView.findViewById(R.id.job_desc);
             vc = itemView.findViewById(R.id.job_vacan);
             bDlt = itemView.findViewById(R.id.btn_dlt);
-            bApplied =itemView.findViewById(R.id.com_btn_applied);
+            bApplied = itemView.findViewById(R.id.com_btn_applied);
             bApplied.setOnClickListener(this);
             bDlt.setOnClickListener(this);
         }
@@ -80,22 +100,26 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.ViewJobHolder> {
             tp.setText("Type:" + mjob.getJobType());
             ds.setText("Descripton:" + mjob.getJobDescription());
             vc.setText("Vacancy:" + mjob.getJobVacancy());
-            Log.d("", "bindView: binded");
         }
 
         @Override
         public void onClick(View view) {
             if (view.getId() == R.id.btn_dlt) {
-             String key = mjob.getJobKey();
-             ref.child(key).removeValue();
+                String key = mjob.getJobKey();
+                ref.child(key).removeValue();
 
+            } else if (view.getId() == R.id.com_btn_applied) {
+                try {
+                    DialogFragment dialogFragment = CompanyDialogFragment.newInstance(R.string.company_appplied_ob_dialog, mjob);
+                    if (flag.equals("fragment"))
+                        dialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "mydialog");
+                    else if (flag.equals("activty"))
+                        dialogFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction(), "mydialog");
+
+                } catch (Exception e) {
+                    Log.d("", "onClick: " + e);
+                }
             }
-            else if(view.getId()==R.id.com_btn_applied){
-                DialogFragment dialogFragment = CompanyDialogFragment.newInstance(R.string.company_appplied_ob_dialog,mjob);
-                dialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction(), "applied");
-
-            }
-
         }
     }
 }

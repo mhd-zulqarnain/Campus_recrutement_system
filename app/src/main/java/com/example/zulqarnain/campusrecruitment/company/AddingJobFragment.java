@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.models.Jobs;
 import com.example.zulqarnain.campusrecruitment.utilities.Messege;
+import com.example.zulqarnain.campusrecruitment.utilities.utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -65,7 +66,7 @@ public class AddingJobFragment extends Fragment implements View.OnClickListener 
         String jDes= jDescription.getText().toString();
         String jVac= jVacancy.getText().toString();
         String jType= jobSpinner.getSelectedItem().toString();
-
+        utils.hideKeyboard(getActivity());
         if(TextUtils.isEmpty(jDes)){
             Messege.messege(getContext(),"Enter the job description");
             return;
@@ -75,11 +76,12 @@ public class AddingJobFragment extends Fragment implements View.OnClickListener 
             return;
         }
         String comkey=auth.getCurrentUser().getUid();
-        String key=mDatabase.push().getKey();
+        String key=comkey;
         Jobs job = new Jobs(jType,key,jDes,jVac,comkey);
         mDatabase.child(key).child("details").setValue(job);
 
         jDescription.setText("");
         jVacancy.setText("");
+        Messege.messege(getActivity(),"Job added successfully");
     }
 }

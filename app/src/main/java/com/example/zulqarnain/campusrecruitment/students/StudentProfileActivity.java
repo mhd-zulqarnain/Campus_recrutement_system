@@ -114,7 +114,7 @@ public class StudentProfileActivity extends AppCompatActivity implements TextWat
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                auth.signOut();
+                //auth.signOut();
                 startActivity(new Intent(StudentProfileActivity.this, LoginActivity.class));
                 finish();
             }

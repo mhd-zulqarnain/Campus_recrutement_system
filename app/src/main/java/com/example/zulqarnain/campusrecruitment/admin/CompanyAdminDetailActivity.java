@@ -1,19 +1,19 @@
-package com.example.zulqarnain.campusrecruitment.company;
+package com.example.zulqarnain.campusrecruitment.admin;
 
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
-import com.example.zulqarnain.campusrecruitment.company.adapters.JobAppliedAdapter;
+import com.example.zulqarnain.campusrecruitment.company.adapters.JobAdapter;
 import com.example.zulqarnain.campusrecruitment.models.Jobs;
-import com.google.firebase.auth.FirebaseAuth;
+import com.example.zulqarnain.campusrecruitment.models.ServiceError;
+import com.example.zulqarnain.campusrecruitment.models.ServiceListener;
+import com.example.zulqarnain.campusrecruitment.utilities.utils;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,43 +22,33 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-/**
- * Created by Zul Qarnain on 11/6/2017.
- */
+public class CompanyAdminDetailActivity extends AppCompatActivity {
 
-public class CompanyJobsAppliedDetails extends Fragment {
     private DatabaseReference ref;
-    private FirebaseAuth auth;
     private RecyclerView rJoblist;
     private ArrayList<Jobs> jobs;
     private final String TAG = "test";
     String comkey;
-    JobAppliedAdapter adapter;
+    JobAdapter adapter;
     private TextView noData;
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.company_jobs_applied_layout, container, false);
-        rJoblist = v.findViewById(R.id.com_job_applied_recycler);
-        noData = v.findViewById(R.id.no_data_view);
-        updateUi();
-        return v;
-    }
+    private static final String ADAPTER_FLAG = "activty";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        auth = FirebaseAuth.getInstance();
-        comkey = auth.getCurrentUser().getUid();
-
+        setContentView(R.layout.activity_company_detail);
+        comkey = getIntent().getStringExtra("uid");
+        rJoblist = (RecyclerView) findViewById(R.id.job_list_view);
         ref = FirebaseDatabase.getInstance().getReference("jobs");
+        noData = (TextView) findViewById(R.id.no_data_view);
+
+        updateUi();
     }
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAppliedAdapter(getContext(), jobs, ref, noData);
-        rJoblist.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new JobAdapter(CompanyAdminDetailActivity.this, jobs, ref, noData, ADAPTER_FLAG);
+        rJoblist.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         rJoblist.setAdapter(adapter);
 
         ref.addChildEventListener(new ChildEventListener() {
@@ -70,6 +60,7 @@ public class CompanyJobsAppliedDetails extends Fragment {
                     jobs.add(job);
                     adapter.notifyDataSetChanged();
                 }
+                Log.d(TAG, "onChildAdded: data added in detail" + dataSnapshot);
             }
 
             @Override
@@ -103,6 +94,18 @@ public class CompanyJobsAppliedDetails extends Fragment {
 
             }
         });
+        utils.getCompanyName(comkey, new ServiceListener() {
+            @Override
+            public void success(Object obj)
+            {
+                setTitle("Job offerd by " + obj.toString());
+            }
+
+            @Override
+            public void error(ServiceError serviceError) {
+
+            }
+        });
     }
 
     public int getIndexOf(String key) {
@@ -114,4 +117,6 @@ public class CompanyJobsAppliedDetails extends Fragment {
         }
         return -1;
     }
+
+
 }

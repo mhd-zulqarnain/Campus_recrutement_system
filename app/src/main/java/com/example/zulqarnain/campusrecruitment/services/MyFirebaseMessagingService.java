@@ -27,7 +27,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String type=null;
         // Check if message contains a data payload.
             if (remoteMessage.getData().size() > 0) {
-                showNotification(remoteMessage.getData().get("type"), remoteMessage.getData().get("vacancy"));
+                showNotification(remoteMessage.getData().get("type"),
+                        remoteMessage.getData().get("vacancy"));
             }
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {

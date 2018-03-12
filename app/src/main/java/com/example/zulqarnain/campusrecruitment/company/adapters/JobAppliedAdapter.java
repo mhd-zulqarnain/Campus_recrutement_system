@@ -30,11 +30,14 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
     private Context mContext;
     private DatabaseReference ref;
     private int applicantNumber;
+    TextView noData;
 
-    public JobAppliedAdapter(Context context, ArrayList<Jobs> jobList, DatabaseReference ref) {
+    public JobAppliedAdapter(Context context, ArrayList<Jobs> jobList, DatabaseReference ref, TextView noData) {
         this.jobList = jobList;
         this.mContext = context;
         this.ref = ref;
+        this.noData=noData;
+
     }
 
     @Override
@@ -51,6 +54,22 @@ public class JobAppliedAdapter extends RecyclerView.Adapter<JobAppliedAdapter.Vi
 
         Jobs jobs = jobList.get(position);
         holder.bindView(jobs);
+        if(jobList.size()==0){
+            noData.setVisibility(View.VISIBLE);
+        }
+        else
+            noData.setVisibility(View.GONE);
+    }
+
+    public void notifyCustomDataRemove(int index)
+    {
+        notifyItemRemoved(index);
+        super.notifyDataSetChanged();
+        if(jobList.size()==0){
+            noData.setVisibility(View.VISIBLE);
+        }
+        else
+            noData.setVisibility(View.GONE);
     }
 
     @Override

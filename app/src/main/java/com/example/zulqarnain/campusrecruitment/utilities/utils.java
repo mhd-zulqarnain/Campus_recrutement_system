@@ -1,17 +1,24 @@
 package com.example.zulqarnain.campusrecruitment.utilities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.view.inputmethod.InputMethodManager;
 
+import com.example.zulqarnain.campusrecruitment.models.ServiceListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * Created by Zul Qarnain on 11/28/2017.
@@ -20,33 +27,38 @@ import java.util.HashMap;
 public class utils {
 
     public static FirebaseAuth auth = FirebaseAuth.getInstance();
-    private static  String usertype=null;
-    public static String getDeviceName(){
+    private static String usertype = null;
+    private static DatabaseReference ref;
+    private static String comName="";
+
+    public static String getDeviceName() {
         String maufacaturer = Build.MANUFACTURER;
         String model = Build.MODEL;
-        if(model.startsWith(maufacaturer)){
+        if (model.startsWith(maufacaturer)) {
             return maufacaturer.toUpperCase();
-        }
-        else
-            return maufacaturer.toLowerCase()+" "+model;
+        } else
+            return maufacaturer.toLowerCase() + " " + model;
     }
-    public static String getIMEI(){
+
+    public static String getIMEI() {
         TelephonyManager telephonyManager = (TelephonyManager) MyApplication.getContext().getSystemService(Context.TELEPHONY_SERVICE);
         return telephonyManager.getDeviceId();
     }
-    public static void updateFcm(String refreshedToken){
-       String mKey = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        HashMap<String,String> fcm = new HashMap<String, String>();
-        fcm.put("token",refreshedToken);
-        fcm.put("device",utils.getDeviceName());
+
+    public static void updateFcm(String refreshedToken) {
+        String mKey = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        HashMap<String, String> fcm = new HashMap<String, String>();
+        fcm.put("token", refreshedToken);
+        fcm.put("device", utils.getDeviceName());
 
         DatabaseReference ref = FirebaseDatabase.getInstance().
                 getReference("users").child(mKey).child("fcm").child(getIMEI());
         ref.setValue(fcm);
     }
-    public static  String getuseype(){
+
+    public static String getuseype() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        String key= auth.getCurrentUser().getUid();
+        String key = auth.getCurrentUser().getUid();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child(key);
         ref.addChildEventListener(new ChildEventListener() {
@@ -78,4 +90,33 @@ public class utils {
         return usertype;
 
     }
+
+    public static void getCompanyName(String uid , final ServiceListener  listener) {
+        ref = FirebaseDatabase.getInstance().getReference("company").child(uid).child("name");
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                comName = (String) dataSnapshot.getValue();
+                if(!comName.equals(null))
+                listener.success(comName);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.success(databaseError);
+            }
+        });
+    }
+    public static void hideKeyboard(Activity context){
+        InputMethodManager imm = (InputMethodManager)context.getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+    }
+
+  /*  public static<T> int getDataIndex(ArrayList<T> data, T elm){
+        for(int i = 0 ;i<data.size();i++){
+            if(d)
+        }
+        return  0;
+    }*/
+
 }

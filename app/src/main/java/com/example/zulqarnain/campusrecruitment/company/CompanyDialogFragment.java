@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.models.Jobs;
+import com.example.zulqarnain.campusrecruitment.models.ServiceError;
+import com.example.zulqarnain.campusrecruitment.models.ServiceListener;
+import com.example.zulqarnain.campusrecruitment.utilities.utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -35,7 +38,6 @@ public class CompanyDialogFragment extends DialogFragment {
     private String currentUID;
     private static String comName;
     int dialogDetailType;
-    private FirebaseAuth auth;
 
     public static CompanyDialogFragment newInstance(int dialogType, Jobs job) {
         Bundle args = new Bundle();
@@ -53,8 +55,7 @@ public class CompanyDialogFragment extends DialogFragment {
         setCancelable(false);
         dialogDetailType = getArguments().getInt(ARGS_DIALOG_TYPE);
         mJob = (Jobs) getArguments().getParcelable(ARGS_DIALOG_JOB_OBJECT);
-        auth = FirebaseAuth.getInstance();
-        currentUID= auth.getCurrentUser().getUid();
+        currentUID = mJob.getCompanyKey();
 
         setButtonName();
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.company_detail_dialog_view, null);
@@ -87,11 +88,11 @@ public class CompanyDialogFragment extends DialogFragment {
 
         if (dialogDetailType == R.string.company_appplied_ob_dialog) {
             String vancy = tJobVacancy.getText().toString();
-            String des= tJobDescription.getText().toString();
+            String des = tJobDescription.getText().toString();
 
-            if (!TextUtils.isEmpty(vancy)&&!TextUtils.isEmpty(des)){
-            Jobs jobs = new Jobs(mJob.getJobType(),mJob.getJobKey(),des,vancy,currentUID);
-            FirebaseDatabase.getInstance().getReference("jobs").child(mJob.getJobKey()).child("details").setValue(jobs);
+            if (!TextUtils.isEmpty(vancy) && !TextUtils.isEmpty(des)) {
+                Jobs jobs = new Jobs(mJob.getJobType(), mJob.getJobKey(), des, vancy, currentUID);
+                FirebaseDatabase.getInstance().getReference("jobs").child(mJob.getJobKey()).child("details").setValue(jobs);
             }
         }
     }
@@ -108,7 +109,7 @@ public class CompanyDialogFragment extends DialogFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser=true){
+        if (isVisibleToUser = true) {
             updateUi();
 
         }
@@ -117,9 +118,20 @@ public class CompanyDialogFragment extends DialogFragment {
     public void updateUi() {
         if (dialogDetailType == R.string.company_appplied_ob_dialog) {
             tJobDescription.setText(mJob.getJobDescription());
-            tCompanyName.setText(auth.getCurrentUser().getDisplayName());
+            utils.getCompanyName(mJob.getCompanyKey(), new ServiceListener<String>() {
+                @Override
+                public void success(String obj) {
+                    tCompanyName.setText(obj);
+                }
+
+                @Override
+                public void error(ServiceError serviceError) {
+                    tCompanyName.setText("no name set");
+                }
+            });
+//            tCompanyName.setText(utils.getCompanyName(mJob.getCompanyKey()));
             tJobType.setText("Job type: " + mJob.getJobType());
-            tJobVacancy.setText( mJob.getJobVacancy());
+            tJobVacancy.setText(mJob.getJobVacancy());
 
         } else if (dialogDetailType == R.string.company_job_dialog) {
             posButtonText = "Delete";

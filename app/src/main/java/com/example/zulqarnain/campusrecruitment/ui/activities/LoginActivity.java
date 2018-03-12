@@ -37,7 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-
 public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
@@ -45,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btSignUp;
     private EditText edEmail;
     private EditText edPass;
+    ProgressDialog sessionBar;
     private ProgressBar barProgress;
     private final String TAG = "com.signin.log.zeelog";
     private String userKey;
@@ -63,13 +63,15 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         askPermission(Manifest.permission.READ_PHONE_STATE, DEVICE_IMEI_PERMISSION);
 
+        sessionBar=new ProgressDialog(LoginActivity.this);
+        sessionBar.setMessage("Checking session");
+        sessionBar.setCancelable(false);
     }
 
     public void signIn(View v) {
 //        Messege.messege(getBaseContext(),"response "+response);
         String email = edEmail.getText().toString();
         String pass = edPass.getText().toString();
-
 
         if (TextUtils.isEmpty(email) || !Validation.isEmailValid(email)) {
             Messege.messege(getBaseContext(), "Invalid email");
@@ -115,33 +117,46 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String type = dataSnapshot.child("type").getValue().toString();
-                String disabled = dataSnapshot.child("disabled").getValue().toString();
-                Log.d(TAG, "onDataChange: disabled "+disabled+" type "+type);
-                if (disabled.equals("false")) {
-                    if (type.equals("Student")) {
-                        Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                try {
+                    String type = dataSnapshot.child("type").getValue().toString();
+                    String disabled = dataSnapshot.child("disabled").getValue().toString();
+                    if (disabled.equals("false")) {
+                        if (type.equals("Student")) {
+                            Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+
+                        } else if (type.equals("Company")) {
+                            Intent intent = new Intent(LoginActivity.this, CompanyActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                            sessionBar.dismiss();
 
 
-                    } else if (type.equals("Company")) {
-                        Intent intent = new Intent(LoginActivity.this, CompanyActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        } else if (type.equals("Admin")) {
+                            Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
 
-                    } else if (type.equals("Admin")) {
-                        Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        }
+                    } else if (disabled.equals("true")) {
+                        auth.signOut();
+                        Messege.messege(getBaseContext(), "Account has been disabled");
+                        barProgress.setVisibility(View.GONE);
+                        sessionBar.dismiss();
+
                     }
-                } else if (disabled.equals("true")){
-                    auth.signOut();
-                    Messege.messege(getBaseContext(),"Account has been disabled");
+                }catch (Exception e){
                     barProgress.setVisibility(View.GONE);
+                    Messege.messege(getBaseContext(), "Account has been disabled after account");
+                    Log.d(TAG, "user gone: "+e);
+                    sessionBar.dismiss();
+                    auth.signOut();
+
+
                 }
             }
 
@@ -156,9 +171,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (auth.getCurrentUser() != null) {
-            ProgressDialog.show(LoginActivity.this,
-                    "Checking session",
-                    "Processing");
+            sessionBar.show();
             updataUi();
         }
     }
