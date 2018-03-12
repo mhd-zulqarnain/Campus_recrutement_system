@@ -114,33 +114,40 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String type = dataSnapshot.child("type").getValue().toString();
-                String disabled = dataSnapshot.child("disabled").getValue().toString();
-                Log.d(TAG, "onDataChange: disabled "+disabled+" type "+type);
-                if (disabled.equals("false")) {
-                    if (type.equals("Student")) {
-                        Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                try {
+                    String type = dataSnapshot.child("type").getValue().toString();
+                    String disabled = dataSnapshot.child("disabled").getValue().toString();
+                    Log.d(TAG, "onDataChange: disabled " + disabled + " type " + type);
+                    if (disabled.equals("false")) {
+                        if (type.equals("Student")) {
+                            Intent intent = new Intent(LoginActivity.this, StudentActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
 
+                        } else if (type.equals("Company")) {
+                            Intent intent = new Intent(LoginActivity.this, CompanyActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
 
-                    } else if (type.equals("Company")) {
-                        Intent intent = new Intent(LoginActivity.this, CompanyActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-
-                    } else if (type.equals("Admin")) {
-                        Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
+                        } else if (type.equals("Admin")) {
+                            Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } else if (disabled.equals("true")) {
+                        auth.signOut();
+                        Messege.messege(getBaseContext(), "Account has been disabled");
+                        barProgress.setVisibility(View.GONE);
                     }
-                } else if (disabled.equals("true")){
-                    auth.signOut();
-                    Messege.messege(getBaseContext(),"Account has been disabled");
+                }catch (Exception e){
                     barProgress.setVisibility(View.GONE);
+                    Messege.messege(getBaseContext(), "Account has been disabled");
+                    auth.signOut();
+
+
                 }
             }
 

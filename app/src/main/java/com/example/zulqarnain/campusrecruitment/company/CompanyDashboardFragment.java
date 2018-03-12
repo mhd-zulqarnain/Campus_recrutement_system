@@ -31,6 +31,7 @@ public class CompanyDashboardFragment extends Fragment {
     private ArrayList<Jobs> jobs;
     private final String TAG = "test";
     String comkey;
+    String ADAPTER_FLAG="fragment";
     private TextView noData ;
     JobAdapter adapter;
 
@@ -49,13 +50,12 @@ public class CompanyDashboardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         auth = FirebaseAuth.getInstance();
         comkey = auth.getCurrentUser().getUid();
-
         ref = FirebaseDatabase.getInstance().getReference("jobs");
     }
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        adapter = new JobAdapter(getContext(), jobs, ref, noData);
+        adapter = new JobAdapter(getContext(), jobs, ref, noData, ADAPTER_FLAG);
         rJoblist.setLayoutManager(new LinearLayoutManager(getContext()));
         rJoblist.setAdapter(adapter);
 

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.zulqarnain.campusrecruitment.R;
 import com.example.zulqarnain.campusrecruitment.company.adapters.JobAdapter;
@@ -23,13 +24,14 @@ import java.util.ArrayList;
 
 public class CompanyAdminDetailActivity extends AppCompatActivity {
 
-
     private DatabaseReference ref;
     private RecyclerView rJoblist;
     private ArrayList<Jobs> jobs;
     private final String TAG = "test";
     String comkey;
     JobAdapter adapter;
+    private TextView noData;
+    private static final String ADAPTER_FLAG = "activty";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,13 +40,14 @@ public class CompanyAdminDetailActivity extends AppCompatActivity {
         comkey = getIntent().getStringExtra("uid");
         rJoblist = (RecyclerView) findViewById(R.id.job_list_view);
         ref = FirebaseDatabase.getInstance().getReference("jobs");
+        noData = (TextView) findViewById(R.id.no_data_view);
 
         updateUi();
     }
 
     private void updateUi() {
         jobs = new ArrayList<>();
-        //adapter = new JobAdapter(getBaseContext(), jobs, ref, noData);
+        adapter = new JobAdapter(CompanyAdminDetailActivity.this, jobs, ref, noData, ADAPTER_FLAG);
         rJoblist.setLayoutManager(new LinearLayoutManager(getBaseContext()));
         rJoblist.setAdapter(adapter);
 
@@ -76,7 +79,7 @@ public class CompanyAdminDetailActivity extends AppCompatActivity {
                 int index = getIndexOf(job.getJobKey());
                 if (index != -1) {
                     jobs.remove(index);
-                    adapter.notifyDataSetChanged();
+                    adapter.notifyCustomDataRemove(index);
                 }
 
             }
@@ -93,8 +96,9 @@ public class CompanyAdminDetailActivity extends AppCompatActivity {
         });
         utils.getCompanyName(comkey, new ServiceListener() {
             @Override
-            public void success(Object obj) {
-                setTitle("Job offerd by "+obj.toString());
+            public void success(Object obj)
+            {
+                setTitle("Job offerd by " + obj.toString());
             }
 
             @Override
@@ -113,7 +117,6 @@ public class CompanyAdminDetailActivity extends AppCompatActivity {
         }
         return -1;
     }
-
 
 
 }

@@ -1,8 +1,10 @@
 package com.example.zulqarnain.campusrecruitment.utilities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.telephony.TelephonyManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.zulqarnain.campusrecruitment.models.ServiceListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 /**
  * Created by Zul Qarnain on 11/28/2017.
@@ -103,6 +107,11 @@ public class utils {
             }
         });
     }
+    public static void hideKeyboard(Activity context){
+        InputMethodManager imm = (InputMethodManager)context.getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+    }
+
   /*  public static<T> int getDataIndex(ArrayList<T> data, T elm){
         for(int i = 0 ;i<data.size();i++){
             if(d)
