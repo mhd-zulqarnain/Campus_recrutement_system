@@ -134,7 +134,6 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                             sessionBar.dismiss();
 
-
                         } else if (type.equals("Admin")) {
                             Intent intent = new Intent(LoginActivity.this, AdminActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -104,7 +104,9 @@ public class StudentActivity extends AppCompatActivity {
             } else if (position == 1) {
                 AppliedJobFragment fragment = new AppliedJobFragment();
                 return fragment;
-
+            } else if (position == 2) {
+                CompanyListFragement fragment = new CompanyListFragement();
+                return fragment;
             }
             return null;
         }
@@ -112,13 +114,15 @@ public class StudentActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             if (position == 0)
                 return "New Jobs";
-            else
+            else if(position == 1)
                 return "Applied Jobs";
+            else
+                return "Company";
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
     }
 
