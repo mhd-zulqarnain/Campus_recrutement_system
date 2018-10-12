@@ -7,25 +7,13 @@ admin.initializeApp({
     databaseURL: "https://testbehaviour-6a6aa.firebaseio.com/"
   });
   defaultAuth = admin.auth();
-  // var ref= admin.database().ref('/users');
-
-  // ref.on("child_added", function(snapshot) {
-  //   var uid = snapshot.val();
-  //   if(uid.type==="Student" && uid.token!== undefined )
-  //     console.log(uid.token);
-  // });
   var database = admin.database();
 
   exports.notifyStudenct=functions.database.ref('/jobs/{jobID}/details')
   .onWrite(event=>{
    
     var snapshot= event.data;
-    // var payload={
-    //     data:{
-    //       type:snapshot.child('jobType').val(),
-    //       vacancy:snapshot.child('jobVacancy').val()
-    //     }
-    // }; 
+
     var payload={
       data:{
         type:'name',
@@ -51,9 +39,4 @@ admin.initializeApp({
     });
 
   });
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+
